@@ -1,0 +1,44 @@
+#######################################################################
+## Wk1: Prototyping Spring: Build Gen AI Demp and MVP
+#######################################################################
+
+
+https://idx.google.com/
+
+Welcome to Project IDX, a new web-based development workspace from Google. IDX is designed to make it faster and easier to build, ship, and manage full-stack, multiplatform apps from the comfort of your browser.
+
+
+
+get code @ Vertex AI freeform will open a collab notebook 
+
+
+
+review
+
+
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/sample-apps/e2e-gen-ai-app-starter-pack
+
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/sample-apps/gemini-streamlit-cloudrun
+
+
+
+deploy to cloud run
+
+cloud run -> cloud build (CI/CD)
+
+vertex AI experiments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

@@ -1,0 +1,65 @@
+#######################################################################
+## Wk1: Gen AI Quickstart with Gemini & Vertex AI
+#######################################################################
+https://console.cloud.google.com/welcome?pli=1&inv=1&invt=AbqiBA&project=startupschool-452017
+
+Startup School
+You're working in
+Project number: 1061457782531
+Project ID: startupschool-452017 
+
+https://goo.gle/GenAI-Skills
+
+# Startup School: Gen AI
+cloudonair.withgoogle.com
+
+# GitHub Notebooks
+github.com/Google/CloudPlatform/generative-ai
+
+Temperature = radomness  (0 to 2)
+TOP_P
+TOP_K
+
+litellm 
+ - middleware to interact with other LLMs
+
+
+concept of a router and fall backs 
+    - configs of models to use
+
+pydantic support for LLM Models 
+
+Datastructure becomes part of the model
+
+
+Gemini supports context hashing 
+    - 50% on tokens for context hashing 
+
+https://goo.gle/GenAI-Labs
+
+notebook:
+
+https://colab.research.google.com/gist/LuisSala/ff416c4fffbb7eaf989b02b4ef552512/startup-school-week-1.ipynb#scrollTo=F4e4gsFstnq0
+
+https://colab.research.google.com/gist/LuisSala/ff416c4fffbb7eaf989b02b4ef552512/startup-school-week-1.ipynb#scrollTo=m5xuppyz7dDX
+
+
+https://goo.gle/SS-GenAI-Discord
+
+
+https://cloud.google.com/vertex-ai/generative-ai/pricing
+
+
+https://jalammar.github.io/illustrated-word2vec/
+
+
+yes, check this one please https://cloud.google.com/vertex-ai/generative-ai/docs/reasoning-engine/overview
+
+
+
+## Recroded sessions here (Watch On Demand): 
+https://goo.gle/SS-Q1
+https://goo.gle/GenAI-Skills
+
+
+.

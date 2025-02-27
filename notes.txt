@@ -1,0 +1,184 @@
+#######################################################################
+## Generative AI: Essentials for Startups
+#######################################################################
+
+
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025/watch?talk=emea-amer-week0-session1
+
+
+
+https://cloud.google.com/transform/101-real-world-generative-ai-use-cases-from-industry-leaders
+
+
+
+
+
+[ User ]  ---->  [ LLM ] <--> [Vector DB]
+   ^----------------+ 
+
+
+## Vertex AI Architecture
+
+[ User ]  --------------------------->   [ Deployment ]
+                                                |
+                       +----------------------------------------------------------+
+                       |   [ Orchestration ]               [ Tools ]              |
+                       |                                                          |
+                       |    [ Model ]               [  Search   ]   [ Vecotr DB ] |
+                       |    [  Tool ]<------------> [ Wikipedia ]   [ Other APIs] |
+                       |    [  Tool ]                                             |
+                       |    [ Model ]<----------------------> [ Model ]           |
+                       |                                                          |
+                       |                                                          |
+                       +----------------------------------------------------------+
+
+
+   [Vertex AI Studio UI]     [ Safety]       ---> [          Foundation Models         ]        [ Model          ]
+                             [   &   ]            [ Google Models  ]   [ Turned Models ] <----- [ Customization  ]
+                             [ Resp  ]            [ Partner Models ]   [ Open  Models  ]        [ Data Prep, Tune]
+                             [       ]                                                          [ Deploy, Monitor]
+                             [       ]                                  [Grounding RAG ]                                      
+                             [       ]                                  [Function Calls]                                      
+                             [       ]                                      
+      [Response]  <--------- [       ]    <----- [Citation Check ]
+                             [       ]
+                             [       ]
+
+
+https://github.com/priyankavergadia/google-cloud-4-words
+
+
+    [ Database  ]      [ Data Analytics ]          [    AI & ML    ]           [ Insights ]
+    [ Cloud SQL ] <=>  [ BigQuery       ]   <==>   [  Vertex AI    ]    <==>   [ Looker ]
+                                                   [ Agent Builder ]
+                                                   [ Model Builder ]
+                                                   [ Model Garden  ]
+
+
+Gen AI Use Cases
+ - Customer support chatbot
+ - Internal knowledge Q/A agent
+ - Autonomous backend AI agents
+ - Multi-modal media, embeddings
+
+3-Tier Architecture
+
+
+Gen AI Tools:   LLMs, text / image / code generation, AI Agents, OSS Frameworks 
+Compute     :   VMs, containers, clusters
+Data        :   Blob Storage, DB, data warehouse   
+
+
+# Cust support / Service 
+#
+Gen AI Tools:   Gemini API
+Compute     :   Cloud Run
+Data        :   Google Cloud Storage, Data Stores
+
+manuals, data to Cloud Storage, embeddings to data stores
+
+
+# Marketing / Sales 
+#
+Gen AI Tools:   Gemini API, Imagen, Agent Builder
+Compute     :   Compute Engine
+Data        :   Google Drive, CMS
+
+
+# Enhanced Product Development
+#
+Gen AI Tools:   LangChain, LangGraph
+Compute     :   Google K8s Engine
+Data        :   Big Query, Spanner, Firestore
+
+
+AI Toolbox 
+ [ Gemini API ]   [ Cloud Run ]     [ Agent Builder ]  
+ [ LangChain  ]   [ BigQuery  ]     [ Evaluation    ]  
+ [ LangGraph  ]   [ Cloud Storage]  [ Model Garden  ]  
+
+
+AI Toolbox v2
+ Generative AI          Compute                 Storage 
+ [ Gemini API ]     [ Cloud Run ]           [ Cloud Storage ]  
+ [Model Garden]     [ Compute Engine ]      [ BigQuery      ]  
+ [ OSS Frameworks]  [       GKE      ]      [ Vertex AI Agent Builder]  
+
+
+
+Best Practices: 
+ - Embrace open source
+ - combine tools when possible
+ - implement modular architectures
+
+Evaluation Quality : 
+ - Define metrics that matter
+ - User-centric testing
+ - Continuous monitoring
+
+
+#######################################################################
+## What's new in Google Cloud Generative AI
+#######################################################################
+
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025/watch?talk=emea-amer-week0-session2
+
+Gemini 2.0 Flash
+ - outperforms 1.5 pro at 2x speed
+ - multi-modal
+ - multimodal output : text, audio, images
+
+ - Mutlimodal Live API 
+    - see, hear, speak 
+    - low-latency real-time interaction
+    - session memory
+    - function calling, code exec, search 
+
+- Search as a tool
+- code execution: run python code 
+- Thinking Mode
+  - reasoning capabilities
+
+
+Gemini 2.o Flash-Lite / Pro
+
+Google Gen AI SDK 
+ - pip install google-genai
+ - unified SDK for Gemini Dev API and API on Vertex AI
+    - one line switch between two
+
+
+Imagen3  v002 
+ - image generations
+
+
+Vertext AI: 
+ - AI Prompt Generation  "Help me write"
+     - refine response
+ - Prompt Optimizer
+    - prompts for a target model
+ - templatized prompts using variables
+ - link by URL, youtube video in prompt
+ - 3rd party models 
+
+Open & 3rd Party ecosystem
+    - Model Garden
+        - Anthropic, Meta, Hugging Face, Mistral AI
+
+Model as a Service 
+    - choose foundational model
+    - access via API
+    - tailor it
+    - deploy on Vertex AI managed infra
+
+github.com/GoogleCloudPlatform/generative-ai
+
+goo.gle/vertex-ai-cookbook
+
+NotebookLM for Enterprise
+
+
+
+
+.
+
