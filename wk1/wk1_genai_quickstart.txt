@@ -8,6 +8,27 @@ You're working in
 Project number: 1061457782531
 Project ID: startupschool-452017 
 
+## Google Cloud SKills Boost: 
+https://www.cloudskillsboost.google/?qlcampaign=1b-sq125-52
+
+## StartUp School Training Schedule
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025
+
+## StartUp School Labs pdf
+https://services.google.com/fh/files/events/ssgenai-labs-w0.pdf
+
+## Google Cloud Platform - generative ai repo
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main
+
+## Google Cloud Platform - gemini sample apps 
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/sample-apps
+
+## Google Cloud Platform - End to End starter pack: REVIEW THIS ONE
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/sample-apps/e2e-gen-ai-app-starter-pack
+
+
+
+https://goo.gle/GenAI-Labs
 https://goo.gle/GenAI-Skills
 
 # Startup School: Gen AI
@@ -15,6 +36,7 @@ cloudonair.withgoogle.com
 
 # GitHub Notebooks
 github.com/Google/CloudPlatform/generative-ai
+https://github.com/GoogleCloudPlatform/generative-ai
 
 Temperature = radomness  (0 to 2)
 TOP_P
