@@ -1,0 +1,529 @@
+Multimodality with Gemini
+
+
+https://www.cloudskillsboost.google/catalog_lab/31090
+
+
+
+
+Navigation > Vertex AI > Workbench > generative-ai-jupyterlab > Open JupyterLab
+
+
+## Image understanding across multiple images
+
+One of the capabilities of Gemini is being able to reason across multiple images.
+
+This is an example of using Gemini to calculate the total cost of groceries using an image of fruits and a price list:
+
+
+
+
+image_grocery_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/banana-apple.jpg"
+image_prices_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/pricelist.jpg"
+image_grocery = load_image_from_url(image_grocery_url)
+image_prices = load_image_from_url(image_prices_url)
+
+instructions = "Instructions: Consider the following image that contains fruits:"
+prompt1 = "How much should I pay for the fruits given the following price list?"
+prompt2 = """
+Answer the question through these steps:
+Step 1: Identify what kind of fruits there are in the first image.
+Step 2: Count the quantity of each fruit.
+Step 3: For each grocery in first image, check the price of the grocery in the price list.
+Step 4: Calculate the subtotal price for each type of fruit.
+Step 5: Calculate the total price of fruits using the subtotals.
+
+Answer and describe the steps taken:
+"""
+
+contents = [
+    instructions,
+    image_grocery,
+    prompt1,
+    image_prices,
+    prompt2,
+]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+OUTPUT:
+
+Answer the question through these steps:
+Step 1: Identify what kind of fruits there are in the first image.
+Step 2: Count the quantity of each fruit.
+Step 3: For each grocery in first image, check the price of the grocery in the price list.
+Step 4: Calculate the subtotal price for each type of fruit.
+Step 5: Calculate the total price of fruits using the subtotals.
+
+Answer and describe the steps taken:
+
+
+-------Response--------
+Step 1: The image shows apples and bananas.
+Step 2: There are two bananas and three apples. 
+Step 3: The price of apples is $1.50 per item. The price of bananas is $0.80 per item.
+Step 4:  The subtotal price for apples is 3 * $1.50 = $4.50. The subtotal price for bananas is 2 * $0.80 = $1.60.
+Step 5: The total price of the fruits is $4.50 + $1.60 = $6.10. 
+
+
+
+
+
+## Understanding Screens and Interfaces¶
+
+Gemini can also extract information from appliance screens, UIs, screenshots, icons, and layouts.
+
+For example, if you input an image of a stove, you can ask Gemini to provide instructions to help a user navigate the UI and respond in different languages:
+
+
+image_stove_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/stove.jpg"
+image_stove = load_image_from_url(image_stove_url)
+
+prompt = """Help me to reset the clock on this appliance?
+Provide the instructions in English and French.
+If instructions include buttons, also explain where those buttons are physically located.
+"""
+
+contents = [image_stove, prompt]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+
+OUTPUT: 
+
+Help me to reset the clock on this appliance?
+Provide the instructions in English and French.
+If instructions include buttons, also explain where those buttons are physically located.
+
+
+-------Response--------
+To reset the clock on your oven, follow these instructions.
+
+**English:**
+1. Press and hold the **CLOCK** button, located on the right side of the control panel.
+2. While holding the **CLOCK** button, press the **CLEAR/OFF** button, located on the lower right of the control panel.
+3. Release both buttons.
+4. The clock will now be reset.
+
+**French:**
+1. Appuyez et maintenez le bouton **HORLOGE**, situé sur le côté droit du panneau de commande.
+2. Tout en maintenant le bouton **HORLOGE**, appuyez sur le bouton **EFFACER/OFF**, situé en bas à droite du panneau de commande.
+3. Relâchez les deux boutons.
+4. L'horloge est maintenant réinitialisée.
+
+
+
+## Understanding entity relationships in technical diagrams¶
+
+Gemini has multimodal capabilities that enable it to understand diagrams and take actionable
+ steps, such as optimization or code generation. This example demonstrates how Gemini can 
+ decipher an entity relationship (ER) diagram, understand the relationships between tables, 
+ identify requirements for optimization in a specific environment like BigQuery, 
+ and even generate corresponding code.
+
+
+
+
+
+image_er_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/er.png"
+image_er = load_image_from_url(image_er_url)
+
+prompt = "Document the entities and relationships in this ER diagram."
+
+contents = [prompt, image_er]
+
+# Use a more deterministic configuration with a low temperature
+generation_config = GenerationConfig(
+    temperature=0.1,
+    top_p=0.8,
+    top_k=40,
+    candidate_count=1,
+    max_output_tokens=2048,
+)
+
+responses = multimodal_model.generate_content(
+    contents,
+    generation_config=generation_config,
+    stream=True,
+)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+
+OUTPUT: 
+
+-------Response--------
+## Entities and Relationships
+
+**Entities:**
+
+* **Category:** Represents different categories of items.
+    * Attributes: category, category_name
+* **Vendor:** Represents different vendors supplying items.
+    * Attributes: vendor_no, vendor
+* **Item:** Represents different items sold.
+    * Attributes: item, description, pack, liter_size
+* **Sales:** Represents sales transactions.
+    * Attributes: date, store, category, vendor_no, item, state_btl_cost, btl_price, bottle_qty, total
+* **Convenience_store:** Represents convenience stores.
+    * Attributes: store
+* **Store:** Represents stores.
+    * Attributes: store, name, address, city, zipcode, store_location, county_number
+* **County:** Represents counties.
+    * Attributes: county_number, county
+
+**Relationships:**
+
+* **Category to Sales:** One-to-many relationship. A category can have many sales transactions, but each sales transaction belongs to only one category.
+* **Vendor to Sales:** One-to-many relationship. A vendor can have many sales transactions, but each sales transaction belongs to only one vendor.
+* **Item to Sales:** One-to-many relationship. An item can be involved in many sales transactions, but each sales transaction involves only one item.
+* **Sales to Convenience_store:** One-to-one relationship. Each sales transaction is associated with one convenience store.
+* **Convenience_store to Store:** One-to-one relationship. Each convenience store is associated with one store.
+* **County to Store:** One-to-many relationship. A county can have many stores, but each store belongs to only one county.
+* **Item to County:** One-to-many relationship. An item can be sold in many counties, but each county can have many items.
+
+**Note:** The relationship between Sales and Convenience_store is represented by a diamond with a "o" on the Sales side. This indicates that the relationship is optional for Sales, meaning a sales transaction can exist without being associated with a convenience store.
+
+
+
+
+## Recommendations based on multiple images
+
+Gemini is capable of image comparison and providing recommendations. This may be useful in industries like e-commerce and retail.
+
+Below is an example of choosing which pair of glasses would be better suited to an oval-shaped face:
+
+
+image_glasses1_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/glasses1.jpg"
+image_glasses2_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/glasses2.jpg"
+image_glasses1 = load_image_from_url(image_glasses1_url)
+image_glasses2 = load_image_from_url(image_glasses2_url)
+
+prompt1 = """
+Which of these glasses do you recommend for me based on the shape of my face?
+I have an oval shape face.
+----
+Glasses 1:
+"""
+prompt2 = """
+----
+Glasses 2:
+"""
+prompt3 = """
+----
+Explain how you reach out to this decision.
+Provide your recommendation based on my face shape, and reasoning for each in JSON format.
+"""
+
+contents = [prompt1, image_glasses1, prompt2, image_glasses2, prompt3]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+OUTPUT:
+
+
+----
+Explain how you reach out to this decision.
+Provide your recommendation based on my face shape, and reasoning for each in JSON format.
+
+
+-------Response--------
+```json
+{
+  "recommendation": "Glasses 2",
+  "reasoning": {
+    "Glasses 1": "Square shaped glasses can make an oval face appear wider, which is not ideal.",
+    "Glasses 2": "Round glasses complement the oval face shape by adding soft curves and balancing out the natural contours."
+  }
+}
+```
+
+
+
+## Similarity/Differences
+
+Gemini can compare images and identify similarities or differences between objects.
+
+The following example shows two scenes from Marienplatz in Munich, Germany that are slightly different. Gemini can compare between the images and find similarities/differences:
+
+
+image_landmark1_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/landmark1.jpg"
+image_landmark2_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/landmark2.jpg"
+image_landmark1 = load_image_from_url(image_landmark1_url)
+image_landmark2 = load_image_from_url(image_landmark2_url)
+
+prompt1 = """
+Consider the following two images:
+Image 1:
+"""
+prompt2 = """
+Image 2:
+"""
+prompt3 = """
+1. What is shown in Image 1? Where is it?
+2. What is similar between the two images?
+3. What is difference between Image 1 and Image 2 in terms of the contents or people shown?
+"""
+
+contents = [prompt1, image_landmark1, prompt2, image_landmark2, prompt3]
+
+generation_config = GenerationConfig(
+    temperature=0.0,
+    top_p=0.8,
+    top_k=40,
+    candidate_count=1,
+    max_output_tokens=2048,
+)
+
+responses = multimodal_model.generate_content(
+    contents,
+    generation_config=generation_config,
+    stream=True,
+)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+
+OUTPUT:
+
+
+1. What is shown in Image 1? Where is it?
+2. What is similar between the two images?
+3. What is difference between Image 1 and Image 2 in terms of the contents or people shown?
+
+
+-------Response--------
+1. Image 1 shows the Feldherrnhalle, a building in Munich, Germany. It is located on the Odeonsplatz, a square in the city center.
+2. Both images show the same scene, the Feldherrnhalle and the Odeonsplatz.
+3. Image 1 shows more people than Image 2. In Image 1, there are people walking around the square, sitting on benches, and standing in front of the Feldherrnhalle. In Image 2, there are fewer people, and they are mostly walking on the street.
+
+
+
+## Generating a video description
+
+Gemini can also extract tags throughout a video:
+
+    Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/mediterraneansea.mp4
+
+
+prompt = """
+What is shown in this video?
+Where should I go to see it?
+What are the top 5 places in the world that look like this?
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/mediterraneansea.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+OUPUT: 
+
+
+-------Response--------
+The video shows the marina and coastline in Antalya, Turkey. 
+
+To see it, you should travel to Antalya, Turkey. 
+
+Here are 5 other places in the world that look similar:
+
+1. **Dubrovnik, Croatia**
+2. **Sorrento, Italy**
+3. **Portofino, Italy**
+4. **Positano, Italy**
+5. **Santorini, Greece** 
+
+
+
+
+## Extracting tags of objects throughout the video¶
+
+Gemini can also extract tags throughout a video.
+
+    Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/photography.mp4
+
+
+
+prompt = """
+Answer the following questions using the video only:
+- What is in the video?
+- What is the action in the video?
+- Provide 10 best tags for this video?
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/photography.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+OUTPUT: 
+
+
+-------Response--------
+- The video shows a man in a cowboy hat standing in a room with a wooden table in front of him.  There is a statue on the table and other items.  
+- He is taking a picture of the statue on the table. 
+- 10 best tags for this video:
+    - photography
+    - photo
+    - photographer
+    - camera
+    - vintage camera
+    - man
+    - cowboy hat
+    - wooden table
+    - statue
+    - art
+
+
+
+
+
+## Asking more questions about a video
+
+Below is another example of using Gemini to ask questions the video and return a JSON response.
+
+    Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/pixel8.mp4
+    Note: Although this video contains audio, Gemini does not currently support audio input and will only answer based on the video.
+
+
+prompt = """
+Answer the following questions using the video only:
+What is the profession of the main person?
+What are the main features of the phone highlighted?
+Which city was this recorded in?
+Provide the answer JSON.
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/pixel8.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+OUTPUT: 
+
+
+-------Response--------
+```json
+{
+ "profession": "photographer",
+ "features": [
+  "Video Boost",
+  "Night Sight"
+ ],
+ "city": "Tokyo"
+}
+```
+
+
+## Retrieving extra information beyond the video¶
+
+Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/ottawatrain3.mp4
+
+
+prompt = """
+Which line is this?
+where does it go?
+What are the stations/stops of this line?
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/ottawatrain3.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents, stream=True)
+
+print("-------Prompt--------")
+print_multimodal_prompt(contents)
+
+print("\n-------Response--------")
+for response in responses:
+    print(response.text, end="")
+
+
+OUTPUT
+
+-------Response--------
+This is the **O-Train Confederation Line**, part of the Ottawa, Canada public transit system. 
+
+It runs from **Tunney's Pasture** in the west to **Blair Station** in the east. 
+
+Here are the stations:
+
+* Tunney's Pasture
+* Bayview
+* Lyon
+* Parliament
+* Rideau
+* uOttawa
+* Lees
+* Tremblay
+* Blair
+
+
+.

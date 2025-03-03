@@ -1,0 +1,1040 @@
+
+Multimodal Use Cases with Gemini 1.5
+
+https://www.cloudskillsboost.google/catalog_lab/31762
+
+
+
+Navigation > Vertex AI > Workbench
+vertex-ai-jupyterlab
+
+
+
+## Textual understanding
+
+Gemini 1.5 Pro can parse textual questions and retain that context across following prompts.
+
+
+question = "What is the average weather in Mountain View, CA in the middle of May?"
+prompt = """
+Considering the weather, please provide some outfit suggestions.
+
+Give examples for the daytime and the evening.
+"""
+
+contents = [question, prompt]
+response = multimodal_model.generate_content(contents)
+display(IPython.display.Markdown(response.text))
+
+
+OUTPUT:
+
+
+
+Mountain View, CA Weather in Mid-May:
+
+Mid-May in Mountain View brings delightful weather! You can expect:
+
+    Temperature: Average highs around 72°F (22°C) and lows around 52°F (11°C).
+    Sunshine: Sunny days are the norm, with occasional partly cloudy skies.
+    Rainfall: Minimal rain. May is part of the dry season.
+
+Outfit Suggestions:
+
+Daytime:
+
+    Comfortable and Casual: With pleasant temperatures, you can't go wrong with:
+        Tops: T-shirts, short-sleeved blouses, polos, or tank tops.
+        Bottoms: Jeans, capris, shorts, or skirts.
+        Footwear: Comfortable walking shoes, sandals, or sneakers.
+    Layering is Key: Evenings can get cool, so bring along a light jacket, cardigan, or sweatshirt.
+    Sun Protection: Don't forget sunglasses and sunscreen!
+
+Evening:
+
+    Slightly Warmer: Temperatures dip in the evening, so opt for:
+        Tops: Long-sleeved shirts, blouses, or lightweight sweaters.
+        Bottoms: Jeans, trousers, or a skirt with tights.
+        Outerwear: A light jacket, cardigan, or blazer is perfect.
+        Footwear: Closed-toe shoes or fashionable sneakers are good choices.
+
+Example Outfits:
+
+    Daytime: Jeans and a t-shirt with a light cardigan, sunglasses, and comfortable walking shoes.
+    Evening: Black jeans, a flowy blouse, a stylish denim jacket, and fashionable sneakers.
+
+Remember, these are just suggestions. Feel free to adjust your outfit based on your personal style and planned activities. Enjoy your time in Mountain View!
+
+
+
+## Document Summarization
+
+You can use Gemini 1.5 Pro to process PDF documents, and analyze content, retain information, and provide answers to queries regarding the documents.
+
+The PDF document example used here is the Gemini 1.5 paper (https://arxiv.org/pdf/2403.05530.pdf).
+
+
+pdf_file_uri = "gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf"
+pdf_file = Part.from_uri(pdf_file_uri, mime_type="application/pdf")
+
+prompt = "How many tokens can the model process?"
+
+contents = [pdf_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+display(IPython.display.Markdown(response.text))
+
+OUTPUT: 
+
+The Gemini 1.5 Pro model can handle an unprecedented 10 million tokens.
+
+
+#########################################################################
+
+prompt = """
+  You are a professional document summarization specialist.
+  Please summarize the given document.
+"""
+
+contents = [pdf_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+display(IPython.display.Markdown(response.text))
+
+OUTPUT: 
+
+The document presents Gemini 1.5 Pro, a new multimodal model from Google DeepMind. This model is capable of understanding and generating text, images, audio, and video, with a significantly expanded context window of up to millions of tokens. This allows it to process much longer and more complex inputs than previous models, opening up new possibilities for applications like long-document question answering, video understanding, and even learning to translate a new language from a single book.
+
+Here are some key takeaways:
+
+    Long Context: Gemini 1.5 Pro can process inputs up to 10 million tokens, surpassing existing models like Claude 2.1 and GPT-4 Turbo. This is achieved through a novel mixture-of-experts architecture and advancements in training infrastructure.
+    Multimodal Understanding: Gemini 1.5 Pro excels in understanding and generating various modalities, including text, code, images, audio, and video. It surpasses its predecessor Gemini 1.0 Pro in performance across a wide range of benchmarks, even approaching the state-of-the-art Gemini 1.0 Ultra.
+    In-Context Learning: The model demonstrates impressive in-context learning capabilities, as shown by its ability to translate English to Kalamang, a low-resource language, solely from linguistic documentation provided in context.
+    Responsible Deployment: Google DeepMind emphasizes responsible deployment practices, conducting thorough impact assessments, evaluating for potential harms, and mitigating risks through fine-tuning and reinforcement learning.
+
+The document also highlights the challenges in evaluating long-context models and calls for new benchmarks and evaluation methodologies to further advance the field. It underscores the potential of long-context AI models to revolutionize various domains, from language preservation and education to multimodal content understanding and generation.
+Image understanding across multiple images
+
+One of Gemini's capabilities is being able to reason across multiple images to provide recommendations.
+
+This is an example using Gemini 1.5 Pro to reason which glasses would be more suitable for an oval face shape:
+
+
+
+
+
+## Image understanding across multiple images
+
+One of Gemini's capabilities is being able to reason across multiple images to provide recommendations.
+
+This is an example using Gemini 1.5 Pro to reason which glasses would be more suitable for an oval face shape:
+
+
+
+image_glasses1_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/glasses1.jpg"
+image_glasses2_url = "https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/glasses2.jpg"
+image_glasses1 = load_image_from_url(image_glasses1_url)
+image_glasses2 = load_image_from_url(image_glasses2_url)
+
+prompt = """
+I have an oval face. Given my face shape, which glasses would be more suitable?
+
+Explain how you reached this decision.
+Provide your recommendation based on my face shape, and please give an explanation for each.
+"""
+
+IPython.display.Image(image_glasses1_url, width=150)
+IPython.display.Image(image_glasses2_url, width=150)
+
+contents = [prompt, image_glasses1, image_glasses2]
+responses = multimodal_model.generate_content(contents)
+display(IPython.display.Markdown(responses.text))
+
+
+OUTPUT: 
+
+For an oval face shape, the round glasses (second image) would be more suitable. Here's why:
+
+Oval Faces: Oval faces are considered the most versatile for eyewear because they have balanced proportions. The goal is to choose frames that maintain this natural balance.
+
+    Round Glasses: These frames provide a pleasing contrast to the natural curves of an oval face. They add a touch of definition and can make the face appear slightly shorter, balancing out the length.
+
+    Square/Rectangular Glasses (first image): While these frames can work on oval faces, they can sometimes appear too geometric and emphasize the length of the face, rather than complementing its natural curves. If you choose this style, consider frames with softer edges or rounded corners.
+
+Key Considerations for Oval Faces:
+
+    Frame Width: Ideally, the frames should be as wide as (or slightly wider than) the widest part of your face.
+    Frame Shape: Experiment with different shapes! Round, oval, cat-eye, and even some geometric styles can look great on oval faces.
+    Avoid: Frames that are too small or narrow, as they can make your face appear longer.
+
+Ultimately, the best glasses are the ones that make you feel confident and comfortable. While these are general guidelines, it's always a good idea to try on different styles and see what suits your personal style and preferences.
+
+
+
+## Generating a video description
+
+Gemini can also extract tags throughout a video:
+
+Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/mediterraneansea.mp4
+
+
+prompt = """
+What is shown in this video?
+Where should I go to see it?
+What are the top 5 places in the world that look like this?
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/mediterraneansea.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents)
+
+display_content_as_video(video)
+display(IPython.display.Markdown(responses.text))
+
+
+OUTPUT: 
+
+ Your browser does not support the element.
+
+The video shows an aerial shot of the Old Harbor of Antalya in Turkey. It is a bustling place with a marina that houses dozens of boats of all sizes. The harbor is surrounded by tall cliffs and there's a breakwater with a lighthouse.
+
+It is nearly impossible to create a top 5 of places that look like the Old Harbor of Antalya. This is because many factors contribute to the location's unique appeal, such as the specific rock formations, the architecture, and the vegetation.
+
+    You can confirm that the location is indeed Antalya, Turkey by visiting the Wikipedia page: https://en.wikipedia.org/wiki/Antalya
+
+
+
+
+You can also use Gemini 1.5 Pro to retrieve extra information beyond the video contents.
+
+    Video: https://storage.googleapis.com/github-repo/img/gemini/multimodality_usecases_overview/ottawatrain3.mp4
+
+
+prompt = """
+Which line is this?
+Where does it go?
+What are the stations/stops?
+"""
+video = Part.from_uri(
+    uri="gs://github-repo/img/gemini/multimodality_usecases_overview/ottawatrain3.mp4",
+    mime_type="video/mp4",
+)
+contents = [prompt, video]
+
+responses = multimodal_model.generate_content(contents)
+
+display_content_as_video(video)
+display(IPython.display.Markdown(responses.text))
+
+
+OUTPUT: 
+
+ Your browser does not support the element.
+
+This is the Confederation Line of the O-Train in Ottawa, Canada. It runs from Tunney's Pasture Station in the west to Blair Station in the east. The full list of stations is as follows:
+
+    Tunney's Pasture
+    Bayview
+    Pimisi
+    Lyon
+    Parliament
+    Rideau
+    uOttawa
+    Lees
+    Hurdman
+    Tremblay
+    St-Laurent
+    Cyrville
+    Blair
+
+
+## Reason across a codebase
+
+You will use the Online Boutique repo as an example in this notebook. Online Boutique is a cloud-first microservices demo application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them. This application consists of 11 microservices across multiple languages.
+
+# The GitHub repository URL
+repo_url = "https://github.com/GoogleCloudPlatform/microservices-demo"  # @param {type:"string"}
+
+# The location to clone the repo
+repo_dir = "./repo"
+
+
+
+Define helper functions for processing GitHub repository
+
+
+import os
+import shutil
+from pathlib import Path
+import requests
+import git
+import magika
+
+m = magika.Magika()
+
+
+def clone_repo(repo_url, repo_dir):
+    """Clone a GitHub repository"""
+
+    if os.path.exists(repo_dir):
+        shutil.rmtree(repo_dir)
+    os.makedirs(repo_dir)
+    git.Repo.clone_from(repo_url, repo_dir)
+
+
+def extract_code(repo_dir):
+    """Create an index, extract content of code/text files"""
+
+    code_index = []
+    code_text = ""
+    for root, _, files in os.walk(repo_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, repo_dir)
+            code_index.append(relative_path)
+
+            file_type = m.identify_path(Path(file_path))
+            if file_type.output.group in ("text", "code"):
+                try:
+                    with open(file_path, "r") as f:
+                        code_text += f"----- File: {relative_path} -----\n"
+                        code_text += f.read()
+                        code_text += "\n-------------------------\n"
+                except Exception:
+                    pass
+
+    return code_index, code_text
+
+
+Create an index and extract the contents of a codebase
+
+Clone the repo and create an index and extract content of code/text files.
+
+
+clone_repo(repo_url, repo_dir)
+
+code_index, code_text = extract_code(repo_dir)
+
+
+
+Define a helper function to generate a prompt to a code related question
+
+def get_code_prompt(question):
+    """Generates a prompt to a code related question."""
+
+    prompt = f"""
+    Questions: {question}
+
+    Context:
+    - The entire codebase is provided below.
+    - Here is an index of all of the files in the codebase:
+      \n\n{code_index}\n\n.
+    - Then each of the files is concatenated together. You will find all of the code you need:
+      \n\n{code_text}\n\n
+
+    Answer:
+  """
+
+    return prompt
+
+
+Create a developer getting started guide
+
+safety_settings={
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+}
+
+question = """
+  Provide a getting started guide to onboard new developers to the codebase.
+"""
+
+prompt = get_code_prompt(question)
+contents = [prompt]
+
+responses = multimodal_model.generate_content(contents, safety_settings=safety_settings, stream=True)
+for response in responses:
+    IPython.display.Markdown(response.text)
+
+
+OUTPUT:
+
+Onboarding Guide for New Developers to the Online Boutique Codebase¶
+
+Welcome
+
+to the Online Boutique project! This guide will help you get started with the code
+
+base and contribute effectively.
+
+1. Project Overview
+
+Online Boutique is a cloud-first microservices demo application showcasing a web-based e-commerce
+
+store. It demonstrates the modernization of enterprise applications using various Google Cloud products and works on any Kubernetes cluster.
+
+2. Architecture
+
+The application comprises
+
+11 microservices written in different languages, communicating over gRPC. See the Architecture Diagram and the table in the main README.md for
+
+a detailed breakdown of each service and its functionality.
+
+3. Codebase Structure
+
+The codebase is structured as follows:
+
+    /src: Contains the source code for each microservice, organized by service name.
+
+    /protos: Holds the Protocol Buffer definitions used for gRPC communication.
+    /kubernetes-manifests: Contains base Kubernetes manifests for deploying the services.
+    /kustomize: Provides Kustomize configurations for deploying variations of the application with different features.
+
+/release: Includes deployable Kubernetes manifests using pre-built public images.
+
+    /terraform: Contains Terraform scripts for deploying the application and its infrastructure.
+    /helm-chart: Houses the Helm chart for deploying the application.
+    /docs: Includes documentation on
+
+various aspects, including development, deployment, and releasing.
+
+4. Getting Started
+
+    Environment Setup:
+        Install the necessary tools: Docker, kubectl, skaffold (2.0.2+), and optionally, minikube, kind, and helm.
+        For Option
+
+1 (GKE), you will need a Google Cloud project with Google Container Registry enabled. * Refer to the Development Guide for detailed setup instructions.
+
+    Running Locally:
+        Option 1 (GKE):
+            Create
+
+a GKE cluster and configure kubectl. * Enable Artifact Registry and configure Docker authentication. * Run skaffold run --default-repo=us-docker.pkg.dev/[PROJECT_ID]/microservices-demo (replace [PROJECT_ID] with your project ID) to
+
+build, push, and deploy the application. * Access the frontend through the frontend-external service's external IP. * Option 2 (Local Cluster): * Choose a local cluster tool (minikube, kind, or Docker for Desktop). * Ensure
+
+the cluster meets minimum resource requirements. * Run skaffold run to build and deploy. * Use kubectl port-forward to access the frontend on localhost.
+
+    Exploring the Code:
+        Navigate to the /src directory and explore the individual microservices.
+
+    Each service directory has its own README.md with specific build and run instructions.
+        Understand the gRPC communication flow by examining the Protocol Buffer definitions in /protos.
+    Deployment Variations:
+        Familiarize yourself with Kustomize and how it enables customizable deployments.
+        Explore the
+
+different components in the /kustomize/components directory. * Use kustomize edit add component to include desired components in your deployment.
+
+    Testing:
+        Go and C# unit tests can be run via respective commands in the individual services' directories.
+        Deployment
+
+tests are defined in the CI workflows. Refer to the README.md in the /github/workflows directory.
+
+5. Contributing
+
+    Before contributing, read and sign the Contributor License Agreement (CLA) at <https://cla.developers
+
+.google.com/>.
+
+    Follow the contribution process outlined in the CONTRIBUTING.md file.
+    Open a GitHub issue to discuss your proposed changes, especially for larger additions.
+    For small changes, fork the repository, make your changes, and submit
+
+a pull request.
+
+6. Resources
+
+    Main README: /README.md
+    Development Guide: /docs/development-guide.md
+    Deployment Variations (Kustomize): [/kustom
+
+ize](/kustomize#readme)
+
+    Terraform Deployment: /terraform
+    Helm Chart: /helm-chart
+    CI Workflows: [/.github/workflows/README.md](/.github/workflows/README.
+
+md)
+
+    Contribution Guide: /.github/CONTRIBUTING.md
+
+
+
+
+
+Finding bugs in the code
+
+
+question = """
+  Find the top 3 most severe issues in the codebase.
+"""
+
+prompt = get_code_prompt(question)
+contents = [prompt]
+
+responses = multimodal_model.generate_content(contents, safety_settings=safety_settings, stream=True)
+
+for response in responses:
+    IPython.display.Markdown(response.text)
+
+
+OUTPUT:
+
+Based
+
+on the provided context, I can't analyze the code for severe issues.
+
+I can only access file names and not their content. To give you a proper
+
+analysis, I need the actual code within those files.
+
+However, I can point out some potential areas of concern based on common issues in microservice architectures
+
+and the provided file structure:
+
+1. Security Concerns (Potential for Cross-Service Vulnerabilities):
+
+    Network Policies: The existence
+
+of a kustomize/components/network-policies directory suggests an attempt to implement network security. However, poorly configured network policies can leave services vulnerable. A thorough review of these policies is needed to ensure proper segmentation and access control
+
+between services.
+
+    Istio/Service Mesh Configuration: Istio offers robust security features like mTLS. If kustomize/components/service-mesh-istio is not configured correctly, it can lead
+
+to insecure communication between services.
+
+    Input Validation: Without seeing the code, it's impossible to assess the robustness of input validation. Insufficient validation in any of the services can lead to injection attacks (SQL injection, XSS, etc.) that could compromise the entire system.
+
+**2. Performance Bottlen
+
+ecks (Scaling and Resource Utilization):**
+
+    cartservice and Database Choice: The cartservice uses different databases based on configuration (Redis, Spanner, AlloyDB). Each database has its own performance characteristics. Careful monitoring and benchmarking are essential to ensure the chosen database can handle the expected load
+
+.
+
+    productcatalogservice Bug: The README.md explicitly mentions a bug in the productcatalogservice that introduces artificial latency and impacts performance. This bug needs to be fixed immediately.
+    Resource Limits: The Kubernetes manifests define resource requests and limits for each service
+
+. If these are set incorrectly, they can lead to resource contention and performance issues.
+
+3. Observability and Monitoring (Lack of Insights):
+
+    Google Cloud Operations Integration: While there's a kustomize/components/google-cloud-operations directory, its configuration needs to
+
+be reviewed to ensure proper monitoring, tracing, and profiling are set up. Without adequate observability, identifying and resolving issues in a microservice environment can be very challenging.
+
+    Logging Practices: Consistent and informative logging across all services is vital for debugging and understanding system behavior. It's unclear from the file
+
+structure whether the codebase has a robust logging strategy.
+
+    Health Checks: While a HealthCheckService exists, it's essential to have comprehensive health checks for each service and the overall system.
+
+**To provide more specific and accurate recommendations, please provide the contents of the source code files
+
+.**
+
+
+
+## Ran Again 
+
+OUTPUT:
+
+Based
+
+on the provided context and code, here are the top 3 most severe issues
+
+in the codebase:
+
+    Insecure gRPC connections: Many
+
+of the services use grpc.WithInsecure() for communication, bypassing Transport Layer Security (TLS) and leaving them vulnerable to man-in-the-
+
+middle attacks and eavesdropping.
+
+* **Locations:** You can find this issue in `src/checkoutservice/main.go`, `src/
+
+frontend/main.go`, and likely in other services as well. * Impact: Exposes sensitive data like credit card information and user details. * Solution: Implement TLS for gRPC connections by utilizing secure
+
+credentials. This involves generating certificates for each service and configuring gRPC to use them.
+
+    Repeated catalog loading in productcatalogservice: The dynamic catalog reloading feature in `src/productcatalogservice/product_catalog.
+
+goreloads theproducts.json` file on every request, causing a significant delay and impacting performance.
+
+* **Impact:** Introduces unnecessary latency, consumes excessive CPU resources, and degrades user experience.
+* **Solution:** Implement a mechanism to reload the catalog only when the `products
+
+.json` file is modified. This could be achieved using file system watchers or a change notification mechanism.
+
+    Direct access to primary AlloyDB instance in cartservice: The AlloyDBCartStore in src/cartservice/src/cartstore/AlloyDBCartStore.cs
+
+always interacts with the primary AlloyDB instance, even for read operations, potentially overloading it.
+
+* **Impact:** Underutilizes the read replicas provided by AlloyDB and may lead to performance bottlenecks.
+* **Solution:** Modify the `AlloyDBCartStore` to utilize read replicas for read operations. This
+
+can be done by establishing separate connections and routing read queries to the appropriate replicas.
+
+Addressing these issues will significantly improve the security, performance, and scalability of the Online Boutique application.
+
+
+
+
+
+Summarizing the codebase with Gemini 1.5 Flash
+
+question = """
+  Give me a summary of this codebase, and tell me the top 3 things that I can learn from it.
+"""
+
+prompt = get_code_prompt(question)
+contents = [prompt]
+
+# Generate text using non-streaming method
+response = multimodal_model_flash.generate_content(contents, safety_settings=safety_settings)
+IPython.display.Markdown(response.text)
+
+OUTPUT: 
+
+
+Summary of the Codebase
+
+This codebase is a microservices-based demonstration of an online boutique application, showcasing various Google Cloud services and technologies for modernizing enterprise applications. It consists of eleven microservices written in different languages (Go, C#, Java, Node.js, Python) that communicate through gRPC. These microservices include frontend, cartservice, productcatalogservice, currencyservice, paymentservice, shippingservice, emailservice, checkoutservice, recommendationservice, adservice, and loadgenerator.
+
+The codebase also includes:
+
+    Infrastructure management: skaffold.yaml for building and deploying the app, terraform/ for infrastructure provisioning, and kustomize/ for customizing the deployment with different variations.
+    Deployment artifacts: release/ contains pre-built public images and YAML manifests for easy deployment, and a helm-chart/ folder for deploying the application through Helm.
+    Documentation: docs/ contains guides for local development, deployment, and releasing.
+    Protocol buffers: protos/ contains the definitions for the gRPC communication between microservices.
+
+
+## Audio understanding
+
+Gemini 1.5 Pro can directly process audio for long-context understanding.
+
+
+audio_file_path = "cloud-samples-data/generative-ai/audio/pixel.mp3"
+audio_file_uri = f"gs://{audio_file_path}"
+audio_file_url = f"https://storage.googleapis.com/{audio_file_path}"
+
+IPython.display.Audio(audio_file_url)
+
+prompt = """
+  Please provide a short summary and title for the audio.
+  Provide chapter titles, be concise and short, no need to provide chapter summaries.
+  Provide each of the chapter titles in a numbered list.
+  Do not make up any information that is not part of the audio and do not be verbose.
+"""
+
+audio_file = Part.from_uri(audio_file_uri, mime_type="audio/mpeg")
+contents = [audio_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+IPython.display.Markdown(response.text)
+
+OUTPUT: 
+
+Title: March Feature Drop
+Chapters
+
+    Favorite Pixel Phone Features
+    Favorite Pixel Watch Features
+    The Importance of Feature Drops
+    January Feature Drop Highlights
+    Pixel Watch March Feature Drop
+    Pixel Phone March Feature Drop
+    Other Feature Drop Updates
+    Question from the Pixel Superfans Community
+    How Features Are Chosen for Feature Drops
+    The Importance of User Feedback
+    When Will the March Feature Drop Launch?
+    Memorable Features From Past Feature Drops
+    De Carlos' Favorite Pixel Watch Features
+
+# Transcription using Gemini 1.5 Flash 
+
+prompt = """
+    Can you transcribe this interview, in the format of timecode, speaker, caption.
+    Use speaker A, speaker B, etc. to identify the speakers.
+    Please provide each piece of information on a separate bullet point.
+"""
+
+audio_file = Part.from_uri(audio_file_uri, mime_type="audio/mpeg")
+contents = [audio_file, prompt]
+
+responses = multimodal_model_flash.generate_content(contents)
+
+IPython.display.Markdown(responses.text)
+
+OUTPUT: 
+
+Okay, here is the transcribed interview.
+
+    0:00 Speaker A your devices are getting better over time and so we think about it across the entire portfolio from phones to watch to buds to tablet. We get really excited about how we can tell a joint narrative across everything.
+    0:09 Speaker B Welcome to the Made by Google podcast, where we meet the people who work on the Google products you love. Here's your host, Rasheed Finch.
+    0:23 Speaker B Today, we're talking to Aisha Sharif and DeCarlos Love. They're both product managers for various Pixel devices and work on something that all the Pixel owners love, the Pixel feature drops. This is the Made by Google podcast. Aisha, which feature on your Pixel phone has been most transformative in your own life?
+    0:46 Speaker A So many features. I am a singer, so I actually think recorded transcription has been incredible, because before, I would record songs, I'd just like freestyle them, record them, type them up, but now, with transcription, it works so well even deciphering lyrics that are jumbled, I think that's huge.
+    1:11 Speaker B Amazing. DeCarlos, same question to you, but for Pixel Watch, of course. Long-time listeners will know you work on Pixel Watch. What has been the most transformative feature in your own life on Pixel Watch?
+    1:28 Speaker B I work on the fitness experiences, and so, for me, it's definitely the ability to track my heart rate, but specifically around the different heart rate targets and zone features that we've released. For me, it's been super helpful. My background is in more football, track and field and, in terms of what I've done before, and so, using the heart rate features to really help me understand that I shouldn't be going as hard when I'm running, you know, leisurely 2 or 3 miles and helping me really tone that down a bit, it's actually been pretty transformative for me to see how things like my resting heart rate have changed due to that feature.
+    2:00 Speaker B Amazing. And, Aisha, I know we spend a lot of time and energy on feature drops within the Pixel team. Why are they so important to us?
+    2:11 Speaker A So, exactly what DeCarlos said, they're important to this narrative that your devices are getting better over time and so, we think about it across the entire portfolio from phones to watch to buds to tablet to Fold, which is also a phone, but, we've even thrown in, like, Chrome OS to our drops sometimes, and so, we get really excited about how we can tell a joint narrative across everything. The other part is, with our Pixel 8 and 8 Pro, and I'm still so excited about this, we have 7 years of OS updates, security updates and feature drops. And so, feature drops just pair so nicely into this narrative of how your devices are getting better over time and they'll continue to get better over time.
+    2:53 Speaker B Yeah, we'll still be talking about Pixel 8 and Pixel 8 Pro in 2030, with those 7 years of software updates and I promise, we'll have an episode on that shortly. Now, the March feature drop is upon us, but I just wanted to look back to the last one, first one from January. Aisha, could you tell us some of the highlights from the January one that just launched?
+    3:15 Speaker A So, it was one of the few times that we've done the software drop with hardware as well, so it was really exciting to get that new mint color out on Pixel 8 and 8 Pro. We also had the body temperature sensor launch in the US, so now, you're able to actually, just with like a scan of your forehead, get your body temp, which is huge. And then a ton of AI enhancements, Circle to Search, came to Pixel 8 and 8 Pro, so you can search from anywhere. One of my favorites, Photo Emoji, so now you can use photos that you have in your album and react to messages with them. Most random, I was hosting a donut ice cream party and literally had a picture of a donut ice cream sandwich that I used to react to messages. Love those little random, random reactions that you can put out there.
+    3:54 Speaker B Amazing, and that was just 2 months ago, now we're upon the March feature drop already. There's one for Pixel phones, then one for Pixel Watches as well. Let's start now with the Watch, DeCarlos. What's new in March?
+    4:06 Speaker B The big story for us is that, not only are we going to make sure that all of your Watches get better over time, but specifically bringing things to previous gen Watches. So, we had some features that launch on the Pixel Watch 2, and in this feature drop, we're bringing those features to the Pixel Watch 1. Some of the things specifically are looking at our Pace features, the thing I mentioned earlier around our heart rate features as well, are coming to the Pixel Watch 1. That allows you to, to kind of set those different settings to target a pace that you want to stay within and get those notifications while you're working out, if you're ahead or above that pace. And, similar with the heart rate zones as well. We're also bringing Activity Recognition to Pixel Watch 1, and users, in addition to Auto Pause, will be able to leverage Activity Recognition for them to start their workouts, in case they forget to actually start it on their own, as well as they'll get a notification to help them stop their workouts, in case they forget to end their workout when they're actually done. Outside of workouts, another feature that's coming in this feature drop is really around the Fitbit Relax app. Something that folks enjoy from Pixel Watch 2, we're also bringing that there, so people can jump in to, you know, take a relaxing moment and work through breathing exercises, right on their wrist.
+    5:10 Speaker B Let's get to the March feature drop on the phone side now. Aisha, what's new for Pixel phone users?
+    5:16 Speaker A So, I'm going to send the sentiment that DeCarlos shared with March really being around devices being made to last. So, Pixel Watch 1 getting features from Pixel Watch 2, we're seeing that on the phone side as well. So, Circle to Search will be expanding to Pixel 7 and 7 Pro. We're also seeing 10-bit HDR move outside of just the camera, but it'll be available in Instagram, so you can take really high-quality Reels. We also have Partial Screen Sharing. So, instead of having to share your entire screen of your phone or your tablet when you're in a meeting or you might be casting, now you can just share a specific app, which is huge for privacy.
+    5:53 Speaker B Those are some amazing updates in the March feature drop. Could you tell us a little bit more about, is there any news maybe for the rest of the portfolio as well?
+    5:59 Speaker A Yeah, so App Screen Sharing is coming to tablet. We're also seeing Docs Markup come to tablet, so you can actually just directly, what it sounds like, markup Docs. Um, but draw in them, take notes in them, and you can do that on your phone as well. And then, another one that's amazing, Bluetooth connection is getting even better, so if you've previously connected, maybe, buds to a phone, now you just bought a tablet, it'll show that those were associated with your account, and you can much more easily connect those devices as well.
+    6:32 Speaker B Mm-hmm, Right.
+    6:35 Speaker B There is a part of this conversation I'm looking forward to most, which is asking a question from the Pixel superfans community. They're getting the opportunity each episode to ask a question, and today's question comes from Casey Carpenter, and they're asking: "What drives your choice of new software in releases?" which is a good one, so you mentioned now, uh, and DeCarlos, we'll start with you. You mentioned a set of features coming to the first generation Pixel Watch, like, how do you sort of decide which ones make to cut this time, which one maybe come next time, how does that work?
+    7:09 Speaker B For us, we, we really think about the, the core principle of we want to make sure that these devices are able to continue to get better, and we know that there has been improvements from Pixel Watch 2. And so, in this case, it's about making sure that we, we bring those features to the Pixel Watch 1 as well. Obviously, we like to think about: "Can it actually happen?" Sometimes, there may be new sensors or things like that on a newer generation that just make some features not possible for a previous gen. But, in the event that we can bring it back, we always strive to do that, especially when we know that we have a lot of good reception from those features and users that are kind of giving us the feedback on the helpfulness of them. What are the things that the users really value and really lean into that, as helping shape how we think about what comes next.
+    8:05 Speaker B Aisha, DeCarlos mentioned user feedback as a part of deciding what's coming in a feature drop. How important is that in making all of the decisions?
+    8:17 Speaker A I think user feedback is huge to everything that we do across devices. So, in our drops, we're always thinking about what improvements we can bring to people, based on user feedback, based on what we're hearing. And so, feature drops are a really great way to continue to enhance features that have already gone out and add improvements on top of them. It's also a way for us to introduce things that are completely new, or, like DeCarlos mentioned, take things that were on newer devices and bring them back to older devices.
+    8:45 Speaker B Now, I'm sure there are a lot of people listening wondering, "When can they get their hands on these new features? When is the March feature drop actually landing on their devices?" Any thoughts there?
+    8:54 Speaker A So, the March feature drop, all these features will start rolling out today, March 4th.
+    9:00 Speaker B Now, we've had many, many, many feature drops over the years, and I'm wondering: "Are there any particular features that stand out to you that we launched in a feature drop?" Maybe, Aisha, I can start with you?
+    9:09 Speaker A I think all of the call features have been incredibly helpful for me. So, a couple of my favorites, Call Screen, we had an enhancement in December, where you get contextual chips now, so if somebody's like leaving a package, and you're in the middle of a meeting, you can respond to that. Also, Direct My Call is available for non-toll-free numbers, so if you're calling a doctor's office that starts with just your local area code, now you can actually use Direct My Call on that, which is such a time saver as well. And, Clear Calling, love that feature, especially when I'm trying to talk to my mom and she's talking to a million people around her as we're trying to have a conversation. So, all incredibly incredibly helpful features.
+    9:51 Speaker B That's amazing. Such staples of the Pixel family right now, and they all came through a feature drop. DeCarlos, of course Pixel Watch has had several feature drops as well. Any favorite in there for you?
+    9:59 Speaker B Yeah, I have a couple outside of the things that are launching right now. I think one was when we released the SpO2 feature in a feature drop. That was one of the things that we heard and knew from the original launch of Pixel Watch 1 that people were excited and looking forward to, so it measures your oxygen saturation. You can wear your watch when you sleep, and overnight, we'll, we'll measure that SpO2 oxygen saturation while you're sleeping. So, that was an exciting one. We got a lot of good feedback on being able to release that and bring that to the Pixel Watch 1 initially. So, that was special. Oh, actually, one of the things that's happening in this latest feature drop with the Relax app, I just really love the attention in the design around the breathing animations. And so, something that folks should definitely check out is, you know, the team that put a lot of good work into just thinking about the pace at which that animation occurs, it's something that you can look at and just kind of lose time just looking and seeing how those haptics and that animation happens.
+    11:00 Speaker B Amazing. It's always the little things that make it extra special, right?
+    11:04 Speaker B Absolutely. That's perfect. Aisha, DeCarlos, thank you so much for making Christmas come early once again, and we're all looking forward to the feature drop in March.
+    11:14 Speaker A Thank you.
+    11:15 Speaker B Thank you.
+    11:16 Speaker B Thank you for listening to the Made by Google podcast. Don't miss out on new episodes. Subscribe now, wherever you get your podcasts, to be the first to listen.
+
+
+# Combining multiple modalities
+# Video and audio understanding
+
+Try out Gemini 1.5 Pro's native multimodal and long context capabilities on video interleaving with audio inputs.
+
+
+video_file_path = "cloud-samples-data/generative-ai/video/pixel8.mp4"
+video_file_uri = f"gs://{video_file_path}"
+video_file_url = f"https://storage.googleapis.com/{video_file_path}"
+
+IPython.display.Video(video_file_url, width=350)
+
+
+prompt = """
+  Provide a description of the video.
+  The description should also contain any important dialogue from the video.
+"""
+
+video_file = Part.from_uri(video_file_uri, mime_type="video/mp4")
+contents = [video_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+IPython.display.Markdown(response.text)
+
+
+OUTPUT: 
+
+The video starts with a beautiful shot of Tokyo at night. A young woman with brown hair in a red and blue striped shirt walks the streets taking pictures and videos. She talks about the new Google Pixel phone and its night mode feature. She mentions this new feature is called "video boost" and activates "Night Sight" in low light, making videos better quality. She then introduces herself: "My name is Saeka Shimada. I'm a photographer in Tokyo... Tokyo has many faces. The city at night is totally different from what you see during the day."
+
+Saeka continues walking down a narrow street taking pictures, "The new Pixel has a feature called 'video boost'. In low light, it activates 'night sight' to make the quality even better".
+
+Saeka smiles at something on her phone, "Sancha is where I used to live when I first moved to Tokyo. I have a lot of great memories here". She continues walking down the street. "Oh, I like this." She says as she squats to the ground to take a picture. She stands and smiles, "Oh, Beautiful!"
+
+The video ends with her visiting Shibuya, another area of Tokyo. "Next, I came to Shibuya."
+
+
+
+
+
+## All modalities (images, video, audio, text) at once
+
+Gemini 1.5 Pro is natively multimodal and supports interleaving of data from different modalities. It can support a mix of audio, visual, text, and code inputs in the same input sequence.
+
+
+
+video_file_path = "cloud-samples-data/generative-ai/video/behind_the_scenes_pixel.mp4"
+video_file_uri = f"gs://{video_file_path}"
+video_file_url = f"https://storage.googleapis.com/{video_file_path}"
+
+IPython.display.Video(video_file_url, width=350)
+
+
+image_file_path = "cloud-samples-data/generative-ai/image/a-man-and-a-dog.png"
+image_file_uri = f"gs://{image_file_path}"
+image_file_url = f"https://storage.googleapis.com/{image_file_path}"
+
+IPython.display.Image(image_file_url, width=350)
+
+
+video_file = Part.from_uri(video_file_uri, mime_type="video/mp4")
+image_file = Part.from_uri(image_file_uri, mime_type="image/png")
+
+prompt = """
+  Look through each frame in the video carefully and answer the questions.
+  Only base your answers strictly on what information is available in the video attached.
+  Do not make up any information that is not part of the video and do not be too
+  verbose, be straightforward.
+
+  Questions:
+  - When is the moment in the image happening in the video? Provide a timestamp.
+  - What is the context of the moment and what does the narrator say about it?
+"""
+
+contents = [video_file, image_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+IPython.display.Markdown(response.text)
+
+
+
+video_file = Part.from_uri(video_file_uri, mime_type="video/mp4")
+image_file = Part.from_uri(image_file_uri, mime_type="image/png")
+
+prompt = """
+  Look through each frame in the video carefully and answer the questions.
+  Only base your answers strictly on what information is available in the video attached.
+  Do not make up any information that is not part of the video and do not be too
+  verbose, be straightforward.
+
+  Questions:
+  - When is the moment in the image happening in the video? Provide a timestamp.
+  - What is the context of the moment and what does the narrator say about it?
+"""
+
+contents = [video_file, image_file, prompt]
+
+response = multimodal_model.generate_content(contents)
+IPython.display.Markdown(response.text)
+
+Searching for a frame in a video and providing contxt
+
+OUTPUT: 
+
+
+Sure! Here is the breakdown of the image, the timestamp, and the context along with what the narrator says about it.
+
+Timestamp: 0:48
+
+Context: A man is smiling in the living room with his dog. The man is the main character in a short film directed by Adam Morse, a blind filmmaker.
+
+Narrator: "The story is about a blind man and his girlfriend and we follow them on their journey together and growing closer".
+
+
+Use Case: retail / e-commerce
+
+The customer shows you their living room:
+
+
+## Generating open recommendations
+
+Using the same image, you can ask the model to recommend a piece of furniture that would make sense in the space.
+
+Note that the model can choose any furniture in this case, and can do so only from its built-in knowledge.
+
+
+# urls for room images
+room_image_url = "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/living-room.png"
+
+# load room images as Image Objects
+room_image = load_image_from_url(room_image_url)
+
+prompt = "Describe this room"
+contents = [prompt, room_image]
+
+IPython.display.Image(room_image_url, width=350)
+responses = multimodal_model.generate_content(contents)
+IPython.display.Markdown(responses.text)Generating open recommendations
+
+
+OUTPUT: 
+This image shows a minimalist living room, bathed in natural light from a large window. The walls are a pale, neutral beige and the floor is a light, polished wood. A large, tan leather sectional sofa dominates the center of the room, facing the window. In front of it is a unique coffee table crafted from a light wood slab and what appears to be natural branches or antlers.
+
+Two distinct armchairs flank the sofa. The one on the left, closest to the window, features a fuzzy, off-white throw draped over it. The chair on the right is a more structured design, upholstered in a lighter tan fabric that complements the sofa.
+
+To the far right stands a minimalist floor lamp with a black shade and a tripod base made of dark wood or metal. The room is sparsely decorated, with just a few books and a dark vase on the coffee table adding subtle accents. The overall impression is one of calm, understated elegance, with a touch of rustic charm.
+
+
+
+
+
+Using the same image, you can ask the model to recommend a piece of furniture that would make sense in the space.
+
+Note that the model can choose any furniture in this case, and can do so only from its built-in knowledge.
+
+prompt1 = "Recommend a new piece of furniture for this room"
+prompt2 = "Explain the reason in detail"
+contents = [prompt1, room_image, prompt2]
+
+responses = multimodal_model.generate_content(contents)
+IPython.display.Markdown(responses.text)
+
+OUTPUT: 
+
+
+The room has a very specific aesthetic:
+
+    Neutral Palette: Everything revolves around beige, browns, and natural materials.
+    Organic Modern: The furniture has a modern, clean-lined silhouette, but incorporates natural materials like leather, wood, and textured fabrics for warmth.
+    Minimalist Leanings: The room isn't sparse, but it avoids clutter.
+
+Considering this, here are some furniture recommendations:
+
+1. A Large Woven Basket:
+
+    Placement: Beside the couch or tucked partially under the coffee table.
+    Reasoning: Adds texture and functionality. It can store throws, pillows, or magazines, keeping with the minimalist approach.
+    Material: Rattan, seagrass, or jute would complement the existing pieces.
+
+2. A Sculptural Floor Lamp:
+
+    Placement: In the corner, opposite the existing lamp.
+    Reasoning: Adds visual balance and another light source.
+    Style: Look for a lamp with a base made of natural wood or a sleek metal in a black or bronze finish to match the existing lamp.
+
+3. A Wooden Bench:
+
+    Placement: At the foot of the couch.
+    Reasoning: Provides extra seating when needed and can double as a surface for displaying books or decorative items.
+    Style: A bench with a simple, mid-century modern design in a light wood finish would fit well.
+
+4. Oversized Wall Art: * Placement: Above the couch. * Reasoning: Fills the large, empty wall space and adds a focal point to the room. * Style: A single, large abstract painting with a neutral color palette, or a series of botanical prints in simple frames would enhance the existing aesthetic.
+
+Avoid furniture that is:
+
+    Ornate or overly decorative: This would clash with the room's clean lines and minimalist feel.
+    Brightly colored: Stick to the existing neutral palette to maintain a cohesive look.
+    Made entirely of metal or glass: These materials would feel too cold and stark in contrast to the warm, organic elements already present.
+
+
+## Generating recommendations based on provided images
+
+Instead of keeping the recommendation open, you can also provide a list of items for the model to choose from. Here, you will download a few art images that the Gemini model can recommend. This is particularly useful for retail companies who want to provide product recommendations to users based on their current setup.
+
+# Download and display sample artwork
+art_image_urls = [
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-1.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-2.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-3.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-4.png",
+]
+
+# Load wall art images as Image Objects
+art_images = [load_image_from_url(url) for url in art_image_urls]
+
+# To recommend an item from a selection, you will need to label the item number within the prompt.
+# That way you are providing the model with a way to reference each image as you pose a question.
+# Labeling images within your prompt also helps reduce hallucinations and produce better results.
+prompt = """
+  You are an interior designer.
+  For each piece of wall art, explain whether it would be appropriate for the style of the room.
+  Rank each piece according to how well it would be compatible in the room.
+"""
+contents = [
+    "Consider the following art pieces:",
+    "art 1:",
+    art_images[0],
+    "art 2:",
+    art_images[1],
+    "art 3:",
+    art_images[2],
+    "art 4:",
+    art_images[3],
+    "room:",
+    room_image,
+    prompt,
+]
+
+IPython.display.Image(room_image_url, width=350)
+print("\n------Art1:-------")
+IPython.display.Image(art_image_urls[0], width=150)
+print("\n------Art2:-------")
+IPython.display.Image(art_image_urls[1], width=150)
+print("\n------Art3:-------")
+IPython.display.Image(art_image_urls[2], width=150)
+print("\n------Art4:-------")
+IPython.display.Image(art_image_urls[3], width=150)
+
+responses = multimodal_model.generate_content(contents)
+IPython.display.Markdown(responses.text)
+
+
+## Updated the prompt:
+
+# Download and display sample artwork
+art_image_urls = [
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-1.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-2.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-3.png",
+    "https://storage.googleapis.com/cloud-samples-data/generative-ai/image/room-art-4.png",
+]
+
+# Load wall art images as Image Objects
+art_images = [load_image_from_url(url) for url in art_image_urls]
+
+# To recommend an item from a selection, you will need to label the item number within the prompt.
+# That way you are providing the model with a way to reference each image as you pose a question.
+# Labeling images within your prompt also helps reduce hallucinations and produce better results.
+prompt = """
+  You are an interior designer.
+  For each piece of wall art, explain whether it would be appropriate for the style of the room.
+  Rank each piece according to how well it would be compatible in the room.
+  Provide a short description as to why or why not the piece would work with the room.
+"""
+contents = [
+    "Consider the following art pieces:",
+    "art 1:",
+    art_images[0],
+    "art 2:",
+    art_images[1],
+    "art 3:",
+    art_images[2],
+    "art 4:",
+    art_images[3],
+    "room:",
+    room_image,
+    prompt,
+]
+
+IPython.display.Image(room_image_url, width=350)
+print("\n------Art1:-------")
+IPython.display.Image(art_image_urls[0], width=150)
+print("\n------Art2:-------")
+IPython.display.Image(art_image_urls[1], width=150)
+print("\n------Art3:-------")
+IPython.display.Image(art_image_urls[2], width=150)
+print("\n------Art4:-------")
+IPython.display.Image(art_image_urls[3], width=150)
+
+responses = multimodal_model.generate_content(contents)
+IPython.display.Markdown(responses.text)
+
+OUTPUT: 
+
+
+
+
+
+
+Here's a breakdown of each art piece and its suitability for the room:
+
+Ranking (Best to Least):
+
+    Art 2: This minimalist botanical print aligns perfectly with the room's aesthetic. The neutral palette, organic shapes, and simple composition complement the existing earth tones, natural materials (leather, wood), and overall calming ambiance.
+
+    Art 1: This piece could work but is a bit less ideal than Art 2. The flowing, abstract design adds a touch of elegance, and the warm color scheme harmonizes with the furniture. However, its slightly more dynamic composition might contrast with the room's overall sense of tranquility.
+
+    Art 3: This architectural photograph is a bit too stark and geometric for the room. While the rusty orange tones could tie into the leather, the image's emphasis on sharp lines and cool grays clashes with the softer, more organic feel of the space.
+
+    Art 4: This vibrant, neon-lit cityscape is the least compatible. Its futuristic theme, intense colors, and energetic composition completely clash with the room's relaxed, natural aesthetic.
+
+In summary: The room leans heavily into a minimalist, nature-inspired aesthetic. Art that reflects those qualities will be the most successful.
+
+
+
+.
