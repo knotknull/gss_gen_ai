@@ -1,0 +1,559 @@
+Getting Started with Vector Search and Embeddings
+https://www.cloudskillsboost.google/catalog_lab/31063
+
+Navigation > Vertex AI > Workbench > generative-ai-jupyterlab
+
+# Embeddings Blog Post:
+https://cloud.google.com/blog/products/ai-machine-learning/how-to-use-grounding-for-your-llms-with-text-embeddings
+
+
+
+
+
+Bringing Gen AI and LLMs to production services
+
+Many people are now starting to think about how to bring Gen AI and LLMs to production services, and facing with several challenges.
+
+    "How to integrate LLMs or AI chatbots with existing IT systems, databases and business data?"
+    "We have thousands of products. How can I let LLM memorize them all precisely?"
+    "How to handle the hallucination issues in AI chatbots to build a reliable service?"
+
+Here is a quick solution: grounding with embeddings and vector search.
+
+What is grounding? What are embedding and vector search? In this tutorial, we will learn these crucial concepts to build reliable Gen AI services for enterprise use. But before we dive deeper, let's try the demo below.
+
+
+
+
+%pip install --upgrade --user google-cloud-aiplatform google-cloud-storage 'google-cloud-bigquery[pandas]'
+
+
+
+
+
+## Getting Started with Vertex AI Embeddings for Text
+# Data Preparation
+
+We will be using the Stack Overflow public dataset hosted on BigQuery table bigquery-public-data.stackoverflow.posts_questions. This is a very big dataset with 23 million rows that doesn't fit into the memory. We are going to limit it to 1000 rows for this tutorial.
+
+# load the BQ Table into a Pandas DataFrame
+from google.cloud import bigquery
+
+QUESTIONS_SIZE = 1000
+
+bq_client = bigquery.Client(project=PROJECT_ID)
+QUERY_TEMPLATE = """
+        SELECT distinct q.id, q.title
+        FROM (SELECT * FROM `bigquery-public-data.stackoverflow.posts_questions`
+        where Score > 0 ORDER BY View_Count desc) AS q
+        LIMIT {limit} ;
+        """
+query = QUERY_TEMPLATE.format(limit=QUESTIONS_SIZE)
+query_job = bq_client.query(query)
+rows = query_job.result()
+df = rows.to_dataframe()
+
+# examine the data
+df.head()
+
+OUTPUT:
+
+id 	title
+0 	73814413 	How is expiration of the token/cookie determined?
+1 	73573670 	EAS build delayed by Fastlane search for devices
+2 	73583172 	Can I `tag` a service in Consul after its `reg...
+3 	73704175 	How do I increase the resolution of Matplotlib...
+4 	73837289 	Nodejs app on Phusion Passenger(R) crashing ra...
+
+
+
+
+# Call the API to generate embeddings
+
+# init the vertexai package
+import vertexai
+
+vertexai.init(project=PROJECT_ID, location=LOCATION)
+
+
+From the package, import TextEmbeddingModel and get a model.
+
+# Load the text embeddings model
+from vertexai.language_models import TextEmbeddingModel
+
+model = TextEmbeddingModel.from_pretrained("text-embedding-004")
+
+https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings#supported_models
+In this tutorial we will use text-embedding-004 model for getting text embeddings. Please take a look at Supported models 
+on the doc to see the list of supported models.
+
+Once you get the model, you can call its get_embeddings function to get embeddings. You can pass up to 5 texts at once in a call. 
+But there is a caveat. By default, the text embeddings API has a "request per minute" quota set to 60 for new Cloud projects 
+and 600 for projects with usage history (see Quotas and limits to check the latest quota value for base_model:textembedding-gecko). 
+So, rather than using the function directly, you may want to define a wrapper like below to limit under 10 calls per second, 
+and pass 5 texts each time.
+
+
+import time
+
+import tqdm  # to show a progress bar
+
+# get embeddings for a list of texts
+BATCH_SIZE = 5
+
+
+def get_embeddings_wrapper(texts):
+    embs = []
+    for i in tqdm.tqdm(range(0, len(texts), BATCH_SIZE)):
+        time.sleep(1)  # to avoid the quota error
+        result = model.get_embeddings(texts[i : i + BATCH_SIZE])
+        embs = embs + [e.values for e in result]
+    return embs
+
+
+The following code will get embedding for the question titles and add them as a new column embedding to the DataFrame. This will take a few minutes.
+
+
+
+# get embeddings for the question titles and add them as "embedding" column
+df = df.assign(embedding=get_embeddings_wrapper(list(df.title)))
+df.head()
+
+
+
+
+
+
+
+
+
+
+
+Look at the embedding similarities
+
+Let's see how these embeddings are organized in the embedding space with their meanings by quickly calculating the similarities 
+between them and sorting them.
+
+As embeddings are vectors, you can calculate similarity between two embeddings by using one of the popular metrics like the followings
+
+Which metric should we use? Usually it depends on how each model is trained. In case of the model text-embedding-004, 
+we need to use inner product (dot product).
+
+In the following code, it picks up one question randomly and uses the numpy np.dot function to calculate the similarities between 
+the question and other questions.
+
+
+
+
+import random
+
+import numpy as np
+
+# pick one of them as a key question
+key = random.randint(0, len(df))
+
+# calc dot product between the key and other questions
+embs = np.array(df.embedding.to_list())
+similarities = np.dot(embs[key], embs.T)
+
+# print similarities for the first 5 questions
+similarities[:5]
+
+
+OUTPUT:
+
+array([0.28797291, 0.21814118, 0.25390881, 0.28012625, 0.30952219])
+
+
+Finally, sort the questions with the similarities and print the list.
+
+# print the question
+print(f"Key question: {df.title[key]}\n")
+
+# sort and print the questions by similarities
+sorted_questions = sorted(
+    zip(df.title, similarities), key=lambda x: x[1], reverse=True
+)[:20]
+for i, (question, similarity) in enumerate(sorted_questions):
+    print(f"{similarity:.4f} {question}")
+
+
+
+OUTPUT:
+
+
+Key question: .net 6 Core MVC Paging for a navigation property
+
+1.0000 .net 6 Core MVC Paging for a navigation property
+0.6005 EF Core make group join list to object
+0.5724 Autoincrement not working in EF Core for custom type primary key
+0.5687 MongoDB Pagination and Sorting With JOIN
+0.5554 Error in Upload large file in asp.net core 6 (HTTP Error 413.1 - Request Entity Too Large)
+0.5359 Deserializing Json array of array in c#
+0.5318 How split UI code from razor page to class with blazor server
+0.5285 How N level object convert to N level Dictionary<string,object> this object can be Enumerable<Dictionary<string,object>> or object (without Json.Net)
+0.5170 Razor MVC -How to creat an object from a form within view?
+0.5104 How to call stored procedure in API using EF/SQL Server and check RetVal before processing ResultSet?
+0.5069 How remove Blazor top-row clickable area before user profile name
+0.5064 Passing IEnumerable as parameter
+0.4928 How do I pass data from a variable in a view to a view model class
+0.4867 SendMouseWheelEvent does not work on subsequent page loads
+0.4863 Deploying Microservice in Kubernetes with swagger .net core using ingress controller
+0.4844 Blazor WASM - Mediator Handle on different thread?
+0.4844 Layout route can't access segments values when used with nested routes with dynamic segments (React Router v6)
+0.4832 How to handle nested field with arguments in Spring for GraphQL @Controller
+0.4712 OnSizeAllocated not being hit for .NET MAUI (iOS) apps on screen rotation
+0.4709 How can I access values in another class inherited from public class C#?
+
+
+
+Find embeddings fast with Vertex AI Vector Search
+
+As we have explained above, you can find similar embeddings by calculating the distance or similarity between the embeddings.
+
+But this isn't easy when you have millions or billions of embeddings. For example, if you have 1 million embeddings with 768 dimensions, 
+you need to repeat the distance calculations for 1 million x 768 times. This would take some seconds - too slow.
+
+So the researchers have been studying a technique called Approximate Nearest Neighbor (ANN) for faster search. ANN uses 
+"vector quantization" for separating the space into multiple spaces with a tree structure. This is similar to the index in relational 
+databases for improving the query performance, enabling very fast and scalable search with billions of embeddings.
+
+With the rise of LLMs, the ANN is getting popular quite rapidly, known as the Vector Search technology.
+
+
+In 2020, Google Research published a new ANN algorithm called ScaNN. It is considered one of the best ANN algorithms in the industry, 
+also the most important foundation for search and recommendation in major Google services such as Google Search, YouTube and many others.
+
+
+## What is Vertex AI Vector Search?
+
+Google Cloud developers can take the full advantage of Google's vector search technology with Vertex AI Vector Search 
+(previously called Matching Engine). With this fully managed service, developers can just add the embeddings to its index 
+and issue a search query with a key embedding for the blazingly fast vector search. In the case of the Stack Overflow demo, 
+Vector Search can find relevant questions from 8 million embeddings in tens of milliseconds.
+
+
+
+With Vector Search, you don't need to spend much time and money building your own vector search service from scratch or using open source tools if your goal is high scalability, availability and maintainability for production systems.
+
+#Get Started with Vector Search
+
+When you already have the embeddings, then getting started with Vector Search is pretty easy. In this section, we will follow the steps below.
+Setting up Vector Search
+
+    Save the embeddings in JSON files on Cloud Storage
+    Build an Index
+    Create an Index Endpoint
+    Deploy the Index to the endpoint
+
+Use Vector Search
+
+    Query with the endpoint
+
+
+
+# Save the embeddings in a JSON file
+
+To load the embeddings to Vector Search, we need to save them in JSON files with JSONL format. See more information in the docs 
+at Input data format and structure.
+
+First, export the id and embedding columns from the DataFrame in JSONL format, and save it.
+
+# save id and embedding as a json file
+jsonl_string = df[["id", "embedding"]].to_json(orient="records", lines=True)
+with open("questions.json", "w") as f:
+    f.write(jsonl_string)
+
+# show the first few lines of the json file
+! head -n 3 questions.json
+
+OUTPUT: 
+
+{"id":73814413,"embedding":[0.0531773791,0.0288713835,-0.0216121022,0.0092759058,0.0304965563,0.0067522512,-0.0084786033,
+........
+........
+........
+0.0155633455,-0.007247522,0.0339663476,0.0203338843,-0.0086795548,0.0109587675,0.0661056265]}
+
+
+
+Then, create a new Cloud Storage bucket and copy the file to it.
+
+BUCKET_URI = f"gs://{PROJECT_ID}-embvs-tutorial-{UID}"
+! gsutil mb -l $LOCATION -p {PROJECT_ID} {BUCKET_URI}
+! gsutil cp questions.json {BUCKET_URI}
+
+OUTPUT:
+
+Creating gs://qwiklabs-gcp-00-a999ccc82f08-embvs-tutorial-03041349/...
+Copying file://questions.json [Content-Type=application/json]...
+/ [1 files][  9.8 MiB/  9.8 MiB]                                                
+Operation completed over 1 objects/9.8 MiB.                                      
+
+
+# Create an Index
+
+Now it's ready to load the embeddings to Vector Search. Its APIs are available under the aiplatform package of the SDK.
+
+# init the aiplatform package
+from google.cloud import aiplatform
+
+aiplatform.init(project=PROJECT_ID, location=LOCATION)
+
+
+Create an MatchingEngineIndex with its create_tree_ah_index function (Matching Engine is the previous name of Vector Search).
+
+
+# create index
+my_index = aiplatform.MatchingEngineIndex.create_tree_ah_index(
+    display_name=f"embvs-tutorial-index-{UID}",
+    contents_delta_uri=BUCKET_URI,
+    dimensions=768,
+    approximate_neighbors_count=20,
+    distance_measure_type="DOT_PRODUCT_DISTANCE",
+)
+
+
+OUTPUT: 
+
+
+Creating MatchingEngineIndex
+Create MatchingEngineIndex backing LRO: projects/486565210005/locations/us-west1/indexes/7059788240089251840/operations/5646270934827401216
+MatchingEngineIndex created. Resource name: projects/486565210005/locations/us-west1/indexes/7059788240089251840
+To use this MatchingEngineIndex in another session:
+index = aiplatform.MatchingEngineIndex('projects/486565210005/locations/us-west1/indexes/7059788240089251840')
+
+
+
+
+By calling the create_tree_ah_index function, it starts building an Index. This will take under a few minutes if the dataset is small, otherwise about 50 minutes or more depending on the size of the dataset. You can check status of the index creation on the Vector Search Console > INDEXES tab.
+
+
+
+
+The parameters for creating index
+
+    contents_delta_uri: The URI of Cloud Storage directory where you stored the embedding JSON files
+    dimensions: Dimension size of each embedding. In this case, it is 768 as we are using the embeddings from the Text Embeddings API.
+    approximate_neighbors_count: how many similar items we want to retrieve in typical cases
+    distance_measure_type: what metrics to measure distance/similarity between embeddings. In this case it's DOT_PRODUCT_DISTANCE
+
+See the document for more details on creating Index and the parameters.
+Batch Update or Streaming Update?
+
+There are two types of index: Index for Batch Update (used in this tutorial) and Index for Streaming Updates. The Batch Update index can be updated with a batch process whereas the Streaming Update index can be updated in real-time. The latter one is more suited for use cases where you want to add or update each embeddings in the index more often, and crucial to serve with the latest embeddings, such as e-commerce product search.
+
+
+# Create Index Endpoint and deploy the Index
+
+To use the Index, you need to create an Index Endpoint. It works as a server instance accepting query requests for your Index.
+
+
+# create IndexEndpoint
+my_index_endpoint = aiplatform.MatchingEngineIndexEndpoint.create(
+    display_name=f"embvs-tutorial-index-endpoint-{UID}",
+    public_endpoint_enabled=True,
+)
+
+OUTPUT: 
+
+Creating MatchingEngineIndexEndpoint
+Create MatchingEngineIndexEndpoint backing LRO: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184/operations/5415461453924663296
+MatchingEngineIndexEndpoint created. Resource name: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+To use this MatchingEngineIndexEndpoint in another session:
+index_endpoint = aiplatform.MatchingEngineIndexEndpoint('projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184')
+
+
+
+This tutorial utilizes a Public Endpoint and does not support Virtual Private Cloud (VPC). Unless you have a specific requirement for VPC,
+ we recommend using a Public Endpoint. Despite the term "public" in its name, it does not imply open access to the public internet. 
+ Rather, it functions like other endpoints in Vertex AI services, which are secured by default through IAM. Without explicit IAM 
+ permissions, as we have previously established, no one can access the endpoint.
+
+With the Index Endpoint, deploy the Index by specifying an unique deployed index ID.
+
+
+
+DEPLOYED_INDEX_ID = f"embvs_tutorial_deployed_{UID}"
+
+# deploy the Index to the Index Endpoint
+my_index_endpoint.deploy_index(index=my_index, deployed_index_id=DEPLOYED_INDEX_ID)
+
+OUTPUT:
+
+Deploying index MatchingEngineIndexEndpoint index_endpoint: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+Deploy index MatchingEngineIndexEndpoint index_endpoint backing LRO: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184/operations/979415820964724736
+MatchingEngineIndexEndpoint index_endpoint Deployed index. Resource name: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+
+<google.cloud.aiplatform.matching_engine.matching_engine_index_endpoint.MatchingEngineIndexEndpoint object at 0x7f9f65702530> 
+resource name: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+
+If it is the first time to deploy an Index to an Index Endpoint, it will take around 25 minutes to automatically build and 
+initiate the backend for it. After the first deployment, it will finish in seconds. To see the status of the index deployment, 
+open the Vector Search Console > INDEX ENDPOINTS tab and click the Index Endpoint.
+
+
+## Run Query
+
+Finally it's ready to use Vector Search. In the following code, it creates an embedding for a test question, and find similar question 
+with the Vector Search.
+
+test_embeddings = get_embeddings_wrapper(["How to read JSON with Python?"])
+
+# Test query
+response = my_index_endpoint.find_neighbors(
+    deployed_index_id=DEPLOYED_INDEX_ID,
+    queries=test_embeddings,
+    num_neighbors=20,
+)
+
+# show the result
+import numpy as np
+
+for idx, neighbor in enumerate(response[0]):
+    id = np.int64(neighbor.id)
+    similar = df.query("id == @id", engine="python")
+    print(f"{neighbor.distance:.4f} {similar.title.values[0]}")
+
+
+OUTPUT: 
+
+
+0.7305 How to place JSON key values into columns using Pandas Dataframe
+0.7165 Reading a section in a json result and adding to a python list
+0.6191 How to pass a dataframe to a specific JSON structure
+0.6078 Normalize strings in a dataframe or json list - python
+0.6065 Get all key-value pair from nested JSON array
+0.5951 How can I assign values to a json file manually
+0.5756 Using split to get particular words in python
+0.5722 Deserializing Json array of array in c#
+0.5525 How to make multiple REST calls asynchronous in python3
+0.5523 AttributeError: module 'pandas' has no attribute 'dataframe' How can i solve this?
+0.5516 How do I use JQ to select a handful of objects matching an ID in a large json file?
+0.5451 Read from every sheet in a .xlsx in python only using standard libraries
+0.5445 Copy or View nested Python dictionary - stop at certain depth
+0.5436 How can I scrape an apple HTML page using python?
+0.5429 is python using iso-8859-1 and utf-8 at the same time?
+0.5369 How N level object convert to N level Dictionary<string,object> this object can be Enumerable<Dictionary<string,object>> or object (without Json.Net)
+0.5265 Return Python dataclass with multiple objects from query
+0.5260 How can I isolate the final part of the string that I don't want with Python?
+0.5175 Pydantic object has no attribute '__fields_set__' error
+0.5118 AttributeError: 'AsyncResult' object has no attribute 'head'
+
+
+The find_neighbors function only takes milliseconds to fetch the similar items even when you have billions of items on the Index, thanks to the ScaNN algorithm. Vector Search also supports autoscaling which can automatically resize the number of nodes based on the demands of your workloads.
+
+
+
+IMPORTANT: Cleaning Up
+
+In case you are using your own Cloud project, not a temporary project on Qwiklab, please make sure to delete all the Indexes, Index Endpoints and Cloud Storage buckets after finishing this tutorial. Otherwise the remaining objects would incur unexpected costs.
+
+If you used Workbench, you may also need to delete the Notebooks from the console.
+
+# wait for a confirmation
+input("Press Enter to delete Index Endpoint, Index and Cloud Storage bucket:")
+
+# delete Index Endpoint
+my_index_endpoint.undeploy_all()
+my_index_endpoint.delete(force=True)
+
+# delete Index
+my_index.delete()
+
+# delete Cloud Storage bucket
+! gsutil rm -r {BUCKET_URI}
+
+
+OUTPUT:
+
+Press Enter to delete Index Endpoint, Index and Cloud Storage bucket: 
+
+Undeploying MatchingEngineIndexEndpoint index_endpoint: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+Undeploy MatchingEngineIndexEndpoint index_endpoint backing LRO: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184/operations/5789260222996414464
+MatchingEngineIndexEndpoint index_endpoint undeployed. Resource name: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+Deleting MatchingEngineIndexEndpoint : projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+MatchingEngineIndexEndpoint deleted. . Resource name: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+Deleting MatchingEngineIndexEndpoint resource: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184
+Delete MatchingEngineIndexEndpoint backing LRO: projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184/operations/1913912743644102656
+MatchingEngineIndexEndpoint resource projects/486565210005/locations/us-west1/indexEndpoints/5922611741992157184 deleted.
+Deleting MatchingEngineIndex : projects/486565210005/locations/us-west1/indexes/7059788240089251840
+MatchingEngineIndex deleted. . Resource name: projects/486565210005/locations/us-west1/indexes/7059788240089251840
+Deleting MatchingEngineIndex resource: projects/486565210005/locations/us-west1/indexes/7059788240089251840
+Delete MatchingEngineIndex backing LRO: projects/486565210005/locations/us-west1/indexes/7059788240089251840/operations/3483417213782720512
+MatchingEngineIndex resource projects/486565210005/locations/us-west1/indexes/7059788240089251840 deleted.
+Removing gs://qwiklabs-gcp-00-a999ccc82f08-embvs-tutorial-03041349/questions.json#1741097538415727...
+/ [1 objects]                                                                   
+Operation completed over 1 objects.                                              
+Removing gs://qwiklabs-gcp-00-a999ccc82f08-embvs-tutorial-03041349/...
+
+
+
+
+
+
+
+
+### What is Embeddings?
+
+With the rise of LLMs, why is it becoming important for IT engineers and ITDMs to understand how they work?
+
+In traditional IT systems, most data is organized as structured or tabular data, using simple keywords, labels, and categories in databases and search engines.
+
+
+In contrast, AI-powered services arrange data into a simple data structure known as "embeddings."
+
+Once trained with specific content like text, images, or any content, AI creates a space called "embedding space", which is essentially a map of the content's meaning.
+
+
+
+"AI builds an embedding space as a map of meaning"
+
+
+
+AI can identify the location of each content on the map, that's what embedding is.
+
+"AI finds an embedding from content, pointing to a location in the map of meaning
+
+
+
+
+Movie
+^
+|      [0.1, 0.02, 0.3]
+|                 [0.1, 0.025, 0.29]
+|       Music
+|       /
+|      /
+|     /
+|    /
+|   /
+|  /
+| /
++-----------------------------------------> actor
+
+Let's take an example where a text discusses movies, music, and actors, with a distribution of 10%, 2%, and 30%, respectively. 
+In this case, the AI can create an embedding with three values: 0.1, 0.02, and 0.3, in 3 dimensional space.
+
+AI puts contents with similar meaning close together in the space
+
+AI and Embeddings are now playing a crucial role in creating a new way of human-computer interaction.
+
+Contents  + AI -->> Embeddings
+
+AI organizes data into embeddings, which represent what the user is looking for, the meaning of contents, or many other things you have in your business. This creates a new level of user experience that is becoming the new standard.
+
+To learn more about embeddings, Foundational courses: Embeddings on Google Machine Learning Crush Course and Meet AI's multitool: Vector embeddings by Dale Markowitz are great materials.
+
+
+
+## Vertex AI Embeddings for Text
+
+With the Vertex AI Embeddings for Text, you can easily create a text embedding with LLM. The product is also available on Vertex AI Model Garden
+
+For example, the model thinks the question "Does moving the request line to a header frame require an app change?" is similar to the question "Does an application developed on HTTP1x require modifications to run on HTTP2?". That is because The model knows both questions talk about what's the change required to support the HTTP2 header frame.
+
+Note that this demo didn't require any training or fine-tuning with computer programming specific datasets. This is the innovative part of the zero-shot learning capability of the LLM. It can be applied to a wide variety of industries, including finance, healthcare, retail, manufacturing, construction, media, and more, for deep semantic search on the industry-focused business documents without spending time and cost for collecting industry specific datasets and training models.
+
+
+.
