@@ -182,9 +182,14 @@ provides stats, graphs on load test
 
 
 
+NOTE: Prod deploy pipeline 
+Step 0: bash -c pip install uv .....
+Step 1: uv export -no-has ....      # deploy to Production
 
 
 
+./src/base_template/deployment/cd/deploy-to-prod.yaml
+	uv export --no-hashes --no-sources --no-header --no-emit-project --frozen > .requirements.txt && uv run app/agent_engine_app.py
 
 
 

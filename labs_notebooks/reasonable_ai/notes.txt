@@ -1,3 +1,361 @@
 Responsible AI: Applying AI Principles with Google Cloud
 
 https://www.cloudskillsboost.google/course_templates/388
+
+
+
+No universal definition of Responsible AI
+
+Google: 
+ - Ai Principles apply to "advanced technology development"
+
+"Trust the process"
+
+
+Google Seven AI  Principles:
+-----------------------------
+1. AI should be socially beneficial
+2. AI should avoid creating or reinforcing unfair bias
+3. AI should be built and tested for safety (HOW??)
+4. AI should be accountable to people 
+5. AI should incorporate privacy design principles
+6. AI should uphold high standards of scientific Excellence
+7. AI should be made available for uses that Accord with these principles 
+
+(That's alot of "shoulds")
+
+
+Not design or deploy AI in four application areas
+    - Tech that cuases overall harm. 
+    - Weapons or other tech to cuase injury to people
+    - Tech to gather or use info for surveillance (that violates internationally accepted norms, HA!)
+    - Tech that contravenes wildely accpepted principles of international law and human rights
+
+
+
+Estimate: AI could boost Global GDP by 14% (15.7 Trillion by 2030) 
+
+Economist Intelligence Unit:  "Staying Ahead of the Curve: The Business Case for Responsible AI"
+
+Seven highlights: 
+1. Incorporating responsible AI practices is a smart investement in product development
+    - organizations can reduce dev costs through a reduction in downstream ethical breaches
+
+2. Responsible AI trailblazers attract and retain top talent
+    - keep talent, build trust and engagement
+
+3. Safeguard the promise of data
+    - how to collect, use and protect data
+    - when org is trusted with data, results in larger more diverse data sets which will improve AI outcomes
+
+4. Importance of preparing in advance of AI Regulation
+    - Orgs can experience significant advanatage when new regs onboarded. 
+    - Non-compliance of GDPR outweighed cost of compliance by 2.7x
+
+5. Responsible AI can improve revenue growth
+    - companies investing in ESG perform better on the stock market
+    - World's Most Ethical Companies ourperformed Large Capg Index by 14.4% over 5 years
+
+6. Responsible AI is powering up partnerships
+    - responsible AI funding: 
+        - 2013:   $8 MM
+        - 2020: $335 MM
+
+7. Maintaining strong trust and branding
+
+
+# AI's Technical Considerations and Ethical Concerns
+
+# Concerts about AI
+1. Transparency
+    - how do they make decisions
+
+2. Unfair Bias
+    - AI amplifies them
+
+3. Security
+    - training data is valuable to exfiltrate
+    - deepfakes
+
+4. Privacy
+    - unwanted identification and tracking 
+
+5. AI pseudoscience
+    - lack of scientific foundation
+    - i.e. face analysis algos / emotion detection
+
+6. Accountability to people
+    - meeting needs and objectives of all types of people
+
+7. AI-driven unemployment and deskilling
+    - AI could drive unemployment
+    - dependency on AI will lead to decline of human abilities
+
+
+LLM concerns:
+ - hallucinations
+ - factuality
+ - anthropomorphization
+
+Pressure to urgently implement AI
+    - "first mover advanatage"
+
+Social Benefits of AI
+  - solve complex problems
+    - improve materials, designs and processes
+    - develop new medical and scientific breakthroughs
+    - allowing more reliable forecasting of complex dynamic systems   ********
+    - providing more affordable goods and services
+
+"Ethical practices promote human flourishing"
+
+
+## Creating AI Principles
+
+AI Charter / Principles
+ - shared ethical principles
+ - get input from many internal / external stakeholders
+
+
+Ethical issue spotting
+ - recognizing ethical concerns in an AI project
+ - decision trees and checklists DON'T WORK
+ - requires an adaptive process
+ - become sensitized to accurately identify and classify ethical issues / risks
+ - ethical lens: consider issues from multiple angles / perspectives
+    see Markkula Center for Applied Ethics
+
+
+Google's ethical aims 
+Objectives for AI Applications:
+
+- Be socially beneficial
+    - do not unfaily deny essential services (housig, insurance, education) 
+    - reduce uninteded harms
+
+- Avoid creating or reinforcing unfair bias
+    - limit influence of historical bias
+    - lifecycle of data (sample, label, train) can introduce bias
+    - Ask questions:
+        - Who are intended users 
+        - what other groups may be impacted
+        - what groups are invisible today
+        - how was training data collected, sampled and labeled
+        - is training data skewed
+        - how was model tested and validated
+        - is model behaving (operating ?) as exptected
+
+- built and tested for safety
+    - promote safety, bodily integrity, overall heal of people, communities, properties and systems
+    - oversight of testing
+    
+- Be accounttable to people
+    - respect people's rights and independence
+    - limiiting lack of opt-out
+    - informed consent
+    
+- incorporate privacy design principles
+    - protect privacy / safety of individuals and groups
+    - personally identifiable / sensitive data handled carefully with robust security 
+    
+- uphold high standards of scientific excellence
+    - follow rigorous scientific approaches  
+    - integrity / collaboration / inquiry
+    
+- be made available for uses that accord with these principles (??)
+    - how close a technology can be used for a harmful use
+
+Not design or deploy AI in four application areas
+    - Tech that cuases overall harm. 
+    - Weapons or other tech to cuase injury to people
+    - Tech to gather or use info for surveillance (that violates internationally accepted norms, HA!)
+    - Tech that contravenes wildely accpepted principles of international law and human rights
+
+
+## Operationalizing AI Princples: Setting Up and Running Reviews
+
+# Google AI Governance
+
+- No checklists for responsible AI
+- Have conversations with different view points
+- Review Committee: Responsible Innovations
+    - day-to-day ops
+    - iniital assessments
+    - consists of 
+        - user researchers
+        - social scientists
+        - ethicists
+        - human rights specialists
+        - policy / privacy advisors
+        - legal experts
+
+- Senior Experts: 
+    - tech / functional / application expertise
+- Senior Executives
+- Customized committees within certain products 
+
+# Google Review Process
+- Customer AI deal review
+    - early stage customer products
+    - identify use cases not aligned
+    - Sales Deal Submission
+        - deals reviewed
+    - Deal Review Committee
+        - Go / No Go
+
+- Cloud AI product dev review
+    - products google creates
+    - pipeline reivew
+    - preliminary reivew
+    - work with product manager
+        - reviews risks / harms
+    - Alignment Plan of product and ethcs
+    - Discuss and Align
+    - AI Principles Team
+    - Path forward: 
+        - narrow scope
+        - allow list
+        - educational materials
+
+Policies eventually becomes precedence
+
+# Celebrity Recognition Case Study
+- tag celebrity in video
+- Not allowed in Cloud Vision API
+    - facial recognition needs to be fair
+    - not used in surveillance that violates internationally accepted norms
+    - protect peoples privacy
+
+- Celebrity Recognition: tightly scoped
+    - concerns about minority representation
+- Engaged with BUsiness for Social Responsibility
+    - conducted Human Rights Impact Assessment
+
+ - Available to qualified customers on allow list
+ - Celebrity are on predefined list
+ - opt-out policy implemented
+
+ - fairness analysis
+ - reviewed errors (i.e. skin tone)
+
+# Issue spotting process
+Questions
+ - Overall product definition
+ - What problem is being solved
+ - Intended users
+ - What data is used
+ - How the model is trained and tested
+Context: 
+ - Purpose and importance of use case
+ - Socially beneficial applications
+ - Potential for misuse
+
+Areas of risk 
+ - Surveillance
+ - Synthetic Media
+
+Fictional Case: Autism Spectrum Disorder Carebos
+by Markkula Center for Applied Ethics at Santa Clara University    
+
+# Lessons learned
+ - measuring not straign forward
+ - how to measure prevented harm
+ - look at customer trust / deal success
+ - gather user experiences / surveys / feedback
+ - ethical dilemmas
+    - need open, honest conversations
+ - Establish well defined AI Principles review
+ - Grounding the review in technical research and business realities
+ - Documenting how decisions were made
+ - Keeping comprehensive record of prior precedents
+
+Difficult to get direct input from external domain experts and affected groups
+
+
+# Lessons Learned: Best Practices
+
+1. Benefit in assembling review committee: 
+    - diverse in identity 
+    - expertise
+    - seniority
+    - include DEI
+
+2. Top down / bottom up support and engagement
+
+3. Train teams (product and tech) on tech ethics
+   - encourage non-tech stakeholders to develop an understanding of 
+      tech, business and societal impacts of AI
+
+4. Align goals and motivations of business and responsible AI team align 
+   - responsible AI == successful AI
+
+5. Transparency in AI governance process
+
+6. System to track alignment of plans, including:
+   - issues, mitigations, precedents
+     
+7. Take a humble approach
+     
+8. Invest in psychological safety
+    - explore potential issues
+    - BUT ground issue spotting in technical, business and societal realities
+
+9. Efficiency is not the primary goal  
+    - balance between dev goals and comprehensive review
+
+10. Assume each AI app needs attention / review
+
+
+Google and Google Cloud Responsible AI pages
+
+
+
+## Resources: 
+
+Google Cloud: Responsible AI
+cloud.google.com/responsible-ai
+
+Google Cloud: Building responsible AI for everyone
+ai.google/responsibilities
+
+Google’s AI Principles
+ai.google/principles/
+
+Blog: AI at Google: our principles
+blog.google/technology/ai/ai-principles/
+
+Responsible AI at Google Research: PAIR
+https://ai.googleblog.com/2023/05/responsible-ai-at-google-research-pair.html
+
+
+Markkula Center for Applied Ethics: Technology and Engineering Practice: Ethical Lenses to Look Through
+scu.edu/ethics-in-technology-practice/ethical-lenses/
+
+TensorFlow: Responsible AI Toolkit
+tensorflow.org/responsible_ai
+
+
+Google Cloud Whitepaper: AI Explainability
+storage.googleapis.com/cloud-ai-whitepapers/AI%20Explainability%20Whitepaper.pdf
+
+Google People + AI Guidebook: Explainability + Trust
+pair.withgoogle.com/chapter/explainability-trust
+
+Improving skin tone representation across Google
+blog.google/products/search/monk-skin-tone-scale/
+
+Markkula Center for Applied Ethics: A Framework for Ethical Decision Making
+scu.edu/ethics/ethics-resources/a-framework-for-ethical-decision-making/
+
+Google Whitepaper: Perspectives on Issues in AI Governance
+ai.google/static/documents/perspectives-on-issues-in-ai-governance.pdf
+
+Google Whitepaper: Building a responsible regulatory framework for AI
+ai.google/static/documents/building-a-responsible-regulatory-framework-for-ai.pdf
+
+Google: Responsible AI practices
+ai.google/responsibilities/responsible-ai-practices/
+ 
+ 
+ 
+ .
