@@ -1,0 +1,200 @@
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025/watch?talk=emea-apac-week2-session2
+
+
+## agent starter pack
+https://github.com/GoogleCloudPlatform/agent-starter-pack.git
+https://github.com/GoogleCloudPlatform/agent-starter-pack?tab=readme-ov-file#high-level-architecture
+
+
+https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-evaluation-in-vertex-ai-gen-ai-evaluation-service?_gl=1*g9ehxy*_ga*MTA2MTI1MTkzNC4xNzQwMTU0MzE4*_ga_WH2QY8WWF5*MTc0MTI5MTQ3NS4xNy4xLjE3NDEyOTI4MzQuNTkuMC4w&_ga=2.219702622.634667104.1741248001-1061251934.1740154318
+
+
+https://github.com/GoogleCloudPlatform/kubectl-ai
+
+## crewai
+https://www.youtube.com/watch?v=tnejrr-0a94
+
+
+goo.gle/agent-starter-pack
+
+
+
+
+3 to 9 months for GCP customer to monetize a GenAI Application in production
+
+BYOA: Bring Your Own Agent
+ LangGraph
+ CrewwAI
+
+
+
+Path to Production for Gen AI Agents
+
+
+
+pip install agent-starter-pack
+
+
+agent-starter-apck create apac-emea-agent
+
+
+
+can deploy against Vertex AI Agent Engine (Vertex AI Managed platform)
+ or Cloud Run (GCP Serverless container execution)
+
+
+
+They are using uv:
+uv sync --dev --extra jupyter --frozen ** npm --prefix frontend install
+
+multimodal agent with vector db
+
+
+How many services from Google to run :
+  - 50 ??
+Oops, issue with demo
+
+
+make playground (again uses uv ...)
+PYTHONPATH=. uv run streamlit run frontend/stramlit_app.py --browser.serverAddress=localhost \
+  --server.enableCORS=false --server.enableXsrProtection=false
+
+
+
+CI Pipeline
+pull request triggers runs of unit test and integration test 
+
+CD Pipeline
+merge to main banch triggers
+
+utilizes cloud build
+CI Pipeline
+ - Unit Tests
+ - Integration Tests
+
+CD Pipeline #1
+ - container build
+ - Deploy to Staging
+ - Load Tests
+
+CD Pipeline #2
+ - Deploy to Prod
+
+
+deployment/ci/pr_checks.yaml
+
+deployment/cd/staging.yaml
+
+deployment/cd/deploy-to-prod.yaml
+
+
+agent-starter-pack setup-cicd \ 
+ --staging-project = stg_proj
+ --prod-project = prod_proj
+ --cicd-project = prod_proj
+ --region=us-central1
+ --repository-name=agentic-repo
+
+NOTES: 
+This command helps setup a basic CI/CD pipeline for development and testing purposes.
+It will: 
+ - create a github repo and connect it to Cloud Build
+ - setup a dev environment infrastructure
+ - configure basic ci/cd triggers for PR checks and deployments
+ - configure remote Terraform state in GCS (use --lcoal-state to use local state instead)
+
+Productino SEtup NOte: 
+For production deployments and maximum flexability, we recommend following the 
+manual setup instructions in deployment/README.md 
+This will ive you more control over: 
+- Security configurations
+- Custom deployment workflows
+- Environment-specific settings
+- Advanced CI/CD pipeline customization
+
+Terraform files:
+ 
+
+./.cloudbuild/terraform/build_triggers.tf
+./.cloudbuild/terraform/service_account.tf
+./.cloudbuild/terraform/storage.tf
+./.cloudbuild/terraform/variables.tf
+./src/deployment_targets/cloud_run/deployment/terraform/artifact_registry.tf
+./src/deployment_targets/cloud_run/deployment/terraform/dev/service_accounts.tf
+./src/resources/setup_cicd/cicd_variables.tf
+./src/resources/setup_cicd/github.tf
+./src/resources/setup_cicd/providers.tf
+./src/base_template/deployment/terraform/dev/apis.tf
+./src/base_template/deployment/terraform/dev/iam.tf
+./src/base_template/deployment/terraform/dev/log_sinks.tf
+./src/base_template/deployment/terraform/dev/providers.tf
+./src/base_template/deployment/terraform/dev/storage.tf
+./src/base_template/deployment/terraform/dev/variables.tf
+./src/base_template/deployment/terraform/apis.tf
+./src/base_template/deployment/terraform/build_triggers.tf
+./src/base_template/deployment/terraform/iam.tf
+./src/base_template/deployment/terraform/locals.tf
+./src/base_template/deployment/terraform/log_sinks.tf
+./src/base_template/deployment/terraform/providers.tf
+./src/base_template/deployment/terraform/variables.tf
+./src/base_template/deployment/terraform/service_accounts.tf
+./src/base_template/deployment/terraform/storage.tf
+
+
+git add --all (or git add -A)
+git checkout -b test-branch
+git commit -m "test"
+git push ( git push --set-upstream origin test-branch)
+
+create pull request
+
+
+NOTE: pipeline uses uv as well, 3 steps
+Step 0: bash -c pip install uv .....
+Step 1: uv run pytest tests/unit         # unit tests
+Step 2: uv run pytest tests/integration  # integration tests
+
+
+NOTE: Prod pipeline uses uv as well, 7 steps
+Step 0: bash -c pip install uv .....
+Step 1: uv export -no-has ....      # deploy staging
+Step 2: echo $(gcloud auth...)      # fetch auth token
+Step 3: export _AUTH_TOKEN ....     # load test 
+Step 4: export _TIMESTAMP  ....     # export results to gcs
+Step 5: gcloud beta builds triggers ... # trigger-prod-deployment
+Step 6: echo "...."                 # echo view buld trigger link 
+
+
+agent_engine_app:  don't need to build container, build class in python
+# just  declare  python packages and code to deploy 
+ - create class
+ - declare mandatory functions: 
+ - set_up(): define  code
+ - set_tracing_properties(): define tracing variables (run_id, user_id, session_id, commit_sha)
+ - stream_query(): stream responses from agent for given input
+ - register_feedback(): collect and log feedback
+ - query(): synchronous query
+ - deploy_agent_engine_app():  deploy agent engine app to Vertex AI
+
+
+python package locust used for load testing
+provides stats, graphs on load test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

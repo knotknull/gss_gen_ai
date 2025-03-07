@@ -1,0 +1,3 @@
+Responsible AI: Applying AI Principles with Google Cloud
+
+https://www.cloudskillsboost.google/course_templates/388
