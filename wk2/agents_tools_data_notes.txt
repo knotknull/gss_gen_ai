@@ -1,36 +1,65 @@
 Week 2: The Essential Gen AI Tech Stack for Startups: Agents, Tools Data
 20250304  / 12:00 - 13:30
 
+# Discord channel
+https://goo.gle/SS-GenAI-Discord
+
+
+
+agent: app that combines gen ai model, tools ......
+
+features:
+ - connect to data
+ - connect to api
+ - grounded with prop info
+ - orchestrate
+ - define a profile, goal, instructions
 
 
 
 
 
+patterns:
+ - reflection
+ - web lokup
+ - semantic routing
+ - parallel delegation
+ - task decomposition
 
 
 
+tools:
+ - RAG
+ - NL2SQL
+ - function calling
+ - vector db
+ - other
+
+agent Framework:
+ - langgraph
+ - Vertex Agent Framework
+ - LlamaIndex
+ - DIY
+
+Runtime:
+ - Vertex Agent Engine
+ - Cloud Run
 
 
 
+Conversational Agents with Playbooks and Dialogflow CX
+    - generative playbooks
+
+
+vector db:
+  - alloydb ?
+
+
+## research multi-agents
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/agents/research-multi-agents/intro_research_multi_agents_gemini_2_0.ipynb
 
 
 

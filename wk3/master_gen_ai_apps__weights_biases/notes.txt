@@ -1,0 +1,167 @@
+Week 3
+Master Gen AI Applications: Hands-On Workshop with Weights & Biases
+
+Weights and Biases:
+ - observability platform for:
+    - model builders
+    - model users
+
+
+# Discord
+https://goog.gle/SS-GenAI-Discord
+
+# Week 2
+https://services.google.com/fh/files/events/startupschool-genai-labs-w2.pdf
+
+# Week 2
+https://services.google.com/fh/files/events/startupschool-genai-labs-repository-q1pdf.pdf
+
+## MAP: TODO LOOK AT THESE 
+## Week 2 Labs
+
+# Compare Generate AI Models | Gen AI Evaluation SDk Tutorial
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/evaluation/compare_generative_ai_models.ipynb
+
+# Intro to Function Calling with Gemini API & Python SDK
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/function-calling/intro_function_calling.ipynb
+
+
+# Natural language to BigQuery with Gemini's Function Calling
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/function-calling/sql-talk-app
+
+
+# Evaluate a LangGraph Agent
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/evaluation/evaluating_langgraph_agent.ipynb
+
+
+# Evaluate a CrewAI Agent
+https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-agents
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/evaluation/evaluating_crewai_agent.ipynb
+
+## Evaluate Gen AI Agents
+https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-agents
+
+# Evalutate a Langchain agent with Agent Engine
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/agent-engine/evaluating_langchain_agent_engine_prebuilt_template.ipynb
+
+# Evalutate a LangGraph agent with Agent Engine
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/agent-engine/evaluating_langgraph_agent_engine_customized_template.ipynb
+
+# Evalutate a CrewAI    agent with Agent Engine
+https://github.com/GoogleCloudPlatform/generative-ai/blob/main/gemini/agent-engine/evaluating_crewai_agent_engine_customized_template.ipynb
+
+
+# End-to-End Sample Demo
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/sample-apps/e2e-gen-ai-app-starter-pack
+
+
+# Multi-Agent Demo
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/agents/research-multi-agents
+
+
+
+# Research Multi Agents
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/agents/research-multi-agents
+APIs: 
+OpenStreetMaps: https://www.openstreetmap.org/#map=4/38.01/-95.84
+NREL:           https://www.nrel.gov/
+
+
+
+Weights and Biases (W&B) Weave + Vertex AI for Gen AI Evaluation
+
+How to test / evaluate models
+
+evaluation dataset: 
+    - HITL: Human In The Loop
+    - Synthetic data using LLMs
+
+HITL + Synth Data >> Evaluation Dataset
+
+
+KEY LINKS: 
+http://wandb.me/tryweave
+https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview?_gl=1*4smnus*_ga*MTA2MTI1MTkzNC4xNzQwMTU0MzE4*_ga_WH2QY8WWF5*MTc0MjE0MjIwOC4yOC4wLjE3NDIxNDIyMDguNjAuMC4w&_ga=2.81328223.913612357.1742139827-1061251934.1740154318
+https://weave-docs.wandb.ai/
+https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview?_gl=1*4smnus*_ga*MTA2MTI1MTkzNC4xNzQwMTU0MzE4*_ga_WH2QY8WWF5*MTc0MjE0MjIwOC4yOC4wLjE3NDIxNDIyMDguNjAuMC4w&_ga=2.81328223.913612357.1742139827-1061251934.1740154318
+https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/evaluation
+
+
+
+
+
+# Building an Agent
+
+                                    [ Define Model ]
+
+[ Determine Use Case]               [ Define Functionality to Tools ]
+i.e. ecomm cust serv asst               1. Product Search   
+                                        2. Order Status 
+                                        3. Category Browse
+                                        4. Price Check
+                                        5. Order History
+
+[ Determine Use Case]               [ Other Settings ]
+                                        - memory
+                                        - tracing, evaluating_crewai_agent
+
+Utilize Hugging Face smolagents library
+    - run agents with minimal code
+    - CodeAgent writes actions in code
+    - Sandboxed
+    - Any language model
+    - Supports text, vision, audio
+    - Compatible with various tools
+
+e2b.dev:  E2B open source runtiem for executing AI generated code in secure cloud sandboxes
+
+ [ LLM ]  <-> [ E2B sandbox ]  <-> [ Output ]
+
+
+From "smol" to scaled: Deploying Hugging Faces agent on Vertex AI
+https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-quickstart
+
+
+@weave.op decorator
+   -input parameter and response is tracked
+   -code state of function is saved
+
+
+key steps: 
+ - Individual steps
+ - Trajectory
+ - Response
+
+
+Instructor: library for simple structured outputs.
+     - built on pydantic 
+     - library to work with structured outputs from LLMs
+
+
+3 methods to evaluate an agent:  
+ - Human Evalutation
+ - LLM as a Judge
+ - automated metrics
+
+
+Vertex AI: GenAI Eval 
+    - evaluation and observability metrics
+    - > 10 metrics for response eval 
+    - 5 metrics for trajectory eval
+    - Custom metric support
+    - Instance-level vs Aggregated results
+    - Integrated w/ Vertex AI Agent Engine
+
+
+
+
+
+
+
+
+
+
+
+
+
+.

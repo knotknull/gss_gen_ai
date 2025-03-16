@@ -19,12 +19,64 @@ gcloud config list project
 
 
 
+# Enable Google CLoud Services
+
+gcloud services enable \
+  compute.googleapis.com \
+  iam.googleapis.com \
+  iamcredentials.googleapis.com \
+  monitoring.googleapis.com \
+  logging.googleapis.com \
+  notebooks.googleapis.com \
+  aiplatform.googleapis.com \
+  bigquery.googleapis.com \
+  artifactregistry.googleapis.com \
+  cloudbuild.googleapis.com \
+  container.googleapis.com
+
+
+
+Operation "operations/acat.p2-167295514168-d0a252d7-2ef6-4cad-8839-b002715bba4e" finished successfully.
+
+
+Vertex AI > Workbench > Open Jupyter Lab > Terminal
+
+
+pip3 install --user -r requirements.txt
+sudo apt -y install python3-pandas
+sudo apt -y install graphviz
+pip uninstall openpyxl
+pip install openpyxl
+
+
+
+In file browser, open ab_exercise-v1.0.0.ipynb
+
+Run Notebook:
+
+
+
+
+In this lab, you use BigQuery for data processing and exploratory data analysis and the Vertex AI platform to train and deploy a custom TensorFlow Regressor model to predict customer lifetime value (CLV). The goal of the lab is to introduce to Vertex AI through a high value real world use case - predictive CLV. You start with a local BigQuery and TensorFlow workflow that you may already be familiar with and progress toward training and deploying your model in the cloud with Vertex AI.
+
+Vertex AI
+
+Vertex AI is Google Cloud's next generation, unified platform for machine learning development and the successor to AI Platform announced at Google I/O in May 2021. By developing machine learning solutions on Vertex AI, you can leverage the latest ML pre-built components and AutoML to significantly enhance development productivity, the ability to scale your workflow and decision making with your data, and accelerate time to value.
+
+
+
+
+# Create a globally unique Google Cloud Storage bucket for artifact storage.
+GCS_BUCKET = f"{PROJECT_ID}-bucket"
+
+!gsutil mb -l $REGION gs://$GCS_BUCKET
 
 
 
 
 
 
+# https://medium.com/google-cloud/ml-design-pattern-3-virtual-epochs-f842296de730
 
 
 
