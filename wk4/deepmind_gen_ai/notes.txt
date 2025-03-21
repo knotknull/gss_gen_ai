@@ -1,0 +1,60 @@
+Build the Future, Faster: Unleashing Google DeepMind's Generative AI Stack
+20250318
+Paige Bailey - Google DeepMind 
+
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025/watch?talk=emea-amer-week4-session1
+
+https://goo.gle/startupschool-genai-labs-w3-2025
+
+
+Gemini 2.0 Flash
+ - multimodal: text, image, audio, video, coding
+
+
+emboddied intelligence: robots
+
+Gemini sizing:  Pro, Flash, Flash-Lite, Nano, Thinking
+
+aistudio.google.com
+
+2 MM tokens: Gemini 1.5 Pro
+
+Gemma 3: most "capable" model you can run on single GPU or TPU
+
+
+Mariner:  Gemini in browser
+
+Co-Scientist: 
+    - research plan, write code, run experiments
+        - multiple agents working together
+
+
+Imagen3: image generation 
+Veo    : video generation
+
+aistudio.google.com  / Gemini 2.0 Flash
+
+Can ground against documents
+
+open vector: chroma, pinecone, weaviate
+
+
+gemini  vs  aistudio  vs  vertex ai 
+
+
+genai sdk  == gemini dev api  + gemini api on vertex ai + 
+
+
+aistudio > get code > code will run in Vertex AI
+
+
+
+
+
+
+
+
+
+
+
+.
