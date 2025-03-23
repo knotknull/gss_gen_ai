@@ -1,22 +1,178 @@
+Empowering Your Work with Google DeepMind Gemma & Vertex AI
+week 4 
+https://cloudonair.withgoogle.com/events/startup-school-ai-q1-2025/watch?talk=emea-amer-week4-session2
+
+Philipp Schmid 
+Ivan Nardini
+
+Resources:
+https://ai.google.dev/gemma/docs
+https://cloud.google.com/vertex-ai/docs/open-source/ray-on-vertex-ai/create-cluster
+https://cloud.google.com/vertex-ai/docs/open-source/ray-on-vertex-ai/develop-application
+
+
+https://ai.google.dev/gemma/docs/core/huggingface_text_finetune_qlora
+https://ai.google.dev/gemma/docs/core/huggingface_vision_finetune_qlora
+https://github.com/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/community/model_garden/model_garden_gemma_fine_tuning_batch_deployment_on_rov.ipynb
+
+
+https://developers.googleblog.com/en/introducing-gemma3/
+https://ilnardo92.medium.com/ray-on-vertex-ai-lets-get-it-started-7a9f8360ea25
 
 
 
 
 
+All LLMs do the same thing, predict the next word / token
+
+Gemma: Open Model
+
+Gemma 3 20250312
+sizes:  
+ - 1B  embeddings, analysis: high thruput
+ - 4B  smartphone: edge
+ - 12B laptop
+ - 27B workstations / cloud
+
+1B: 
+ - text only
+ - 32k token context length
+ - natural language
+ - great for text classification, embeddings
+
+
+4B / 12B / 27 B 
+ - multimodality
+ - image inputs
+ - 128k token context length
+ - 1 to 90 depth / width ratio (?)
+ - Data mixture rich in multilingual, code, math
+
+lmsys 
+Gemma 3: best non-reasoning model
+
+
+context:
+Gemma 2:   8k tokens   ~25  pages of text
+Gemma 3: 128k tokens   ~400 pages of text / 500 images
+
+
+use in Ollama (ollama.com): 
+ollama run gemma3
+
+
+How to fine tune model with additional data ?
+ - Vertex AI  (+ ray ?!?!?!)
 
 
 
+                                       Vertex AI
++-------------------------+  +------------------------+   +-----------------------+  
+|  Gemini for Google      |  |     AI Applications    |   |        Google         |  
+|  Workspace and Cloud    |  |       and Agents       |   |       AgentSpace      |  
++-------------------------+  +------------------------+   +-----------------------+  
++---------------------------------------------------------------------------------+
+|                                   AI Solutions                                  | 
+|         Contact Center | Document | Discovery |  Risk | Healthcare              | 
++---------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------+
+|                                   Agent Builder                                 | 
++---------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------+
+|                                    AI Platform                                  | 
+|  Extensions | Connectors | Grounding Prmpt | Server | Tune | Distill | Eval     | 
++---------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------+
+|                                    Model Garden                                 | 
+|  Gemini + 130+ models     Google | OSS | Partner Models                   Gemma |
++---------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------+
+|            Google Cloud Infrastructure (GPU / TPU)  | Google Data Cloud         | 
++---------------------------------------------------------------------------------+
+
+
+Demo:
+Colab -->> Ray
+
+Colab submits fine tuning job to Ray cluster
 
 
 
+## Ray hello world 
+
+import ray
+
+ray.ini()       # initialize a ray session on ray cluster
+
+@ray.remote     # convert function to a task
+def hello_world(): 
+    return "hello world"
+
+future = hello_world.remote()   # execute the function on cluster, 
+                                # returns a future (eventual result of asynchronous operation)
+data = ray.get(future)          # return the result
+print(data)
+
+
+Ray on Vertex AI (fully managed ray services against Vertex AI)
+
+
+Make Gemma 3 thinkg with GRPO (Group Relative Policy Optimization)
+
+GRPO: reinforcement technique that helps LLM improve reasoning
+
+
+Scenario: use Countdown-Tasks-3to4 dataset about mathematical problem 
+requiring multi-step reasoning and use random numbers and arithmetic operations
+
+Task: Tune Gemma3 using GRPO to enhance reasoning capabilities
+
+
+1. Create a ray cluster
+2. Pre-process data using Ray Data
+3. Distributed GRPO training using Ray Train
+
+
+# create (ray vertex) cluster
+ray_cluster_name = vertex_ray.create_ray.cluster(
+    head_node_type = head_node_type, 
+    worker_node_type = workerhead_node_type, 
+    cluster_name = cluster_name, 
+)
 
 
 
+# get the created ray cluster
+ray_clusters = vertex_ray.list_ray_clusters()
+ray_cluster_resource_name = ray_clusters[-1].cluster_resource_name
+ray_cluster = vertex_ray.get_ray_cluster(ray_cluster_resource_name)
+print("Ray cluster on Vertex AI:", ray_cluster_resource_name)
 
 
+> Vertex AI > Colab Enterprise
+
+Create image (Docker plus pip install libraries needed)
+Create docker image repo 
+Store created image to docker image repo
+Build Ray cluster from customer image stored in repo 
+  - (via Cloud Build, managed service for Docker image builds)
 
 
+NOTE: vLLM is library for LLM inference and serving
 
+print("Ray cluster on Vertex AI:", ray_cluster_resource_name)
+Ray cluster on Vertex AI: projects/<project_id>/locations/<location>/persistentResources/gemma3-demo
+
+
+Vertex AI> Ray on Vertex AI
+
+
+NOTE: can run Ray Vertex App via Vertex AI SDK or Ray Jobs API
+
+
+Ray Train: distributed model training
+
+trl: python library for post-training foundation models
 
 
 .
